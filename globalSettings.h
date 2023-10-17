@@ -1,0 +1,8 @@
+#ifndef GLOBALSETTINGS_H
+#define GLOBALSETTINGS_H
+
+#define CHUNKWIDTH 20
+#define CHUNKHEIGHT 80
+#define LOADEDCHUNKWIDTH 3
+
+#endif
