@@ -1,5 +1,5 @@
 #include "block.h"
-
+#include <vector>
 inline void addTopFace(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs, int x, int y, int z) {
 	int size = triangles.size();
 	float topFaceVerts[] = {
@@ -142,6 +142,10 @@ Block::Block(int x, int y, int z,int blockType) {
 	this->z = z;
 	this->blockType = blockType;
 	left, right, up, down, front, back = NULL;
+}
+
+Block::~Block()
+{
 }
 
 void Block::addGemometry(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs)

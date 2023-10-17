@@ -1,5 +1,9 @@
 #include "world.h"
-
+#include "globalSettings.h"
+#include "chunk.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 World::World()
 {
 	playerPos = glm::vec3(0,0,0);
@@ -17,10 +21,18 @@ World::World()
 	}
 }
 
+World::~World()
+{
+}
+
 void World::update(glm::vec2 playerPos, float dt)
 {
 	for (int i = 0; i < LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH; i++)
 	{
 		loadedChunks[i]->update(dt);
 	}
+}
+
+void World::loadChunks()
+{
 }

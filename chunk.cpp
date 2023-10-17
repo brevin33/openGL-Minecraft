@@ -15,6 +15,10 @@ Chunk::Chunk(int worldZ, int worldX)
 	}
 }
 
+Chunk::~Chunk()
+{
+}
+
 void Chunk::createMesh() {
 	vertices.clear();
 	triangles.clear();
@@ -24,6 +28,14 @@ void Chunk::createMesh() {
 		blocks[i].addGemometry(vertices,triangles,uvs);
 	}
 	// send to gpu
+}
+
+void Chunk::giveBlocksNeighbors()
+{
+}
+
+void Chunk::update(float dt)
+{
 }
 
 Block Chunk::GenorateBlock(int x, int y, int z) {
