@@ -36,8 +36,7 @@ void Chunk::createMesh() {
 	uvs.clear();
 	for (int i = 0; i < CHUNKWIDTH * CHUNKHEIGHT; i++)
 	{
-        Block b = blocks[i];
-		b.addGemometry(vertices,triangles,uvs);
+		blocks[i].addGemometry(vertices,triangles,uvs);
 	}
 	int test = 1;
 	// send to gpu
@@ -53,5 +52,7 @@ Block* Chunk::getBlockAt(uint8_t x, uint8_t y, uint8_t z)
 }
 
 Block Chunk::GenorateBlock(uint8_t x, uint8_t y, uint8_t z) {
+	if(y > 100)
+		return Block(x, y, z, AIR, chunkIndex);
 	return Block(x, y, z, DIRT, chunkIndex);
 }

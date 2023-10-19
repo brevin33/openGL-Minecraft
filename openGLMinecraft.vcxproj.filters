@@ -47,6 +47,9 @@
     <ClInclude Include="globalSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="nibble.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="screenSpace.vert">

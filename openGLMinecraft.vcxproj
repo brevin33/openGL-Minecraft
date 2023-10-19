@@ -136,6 +136,7 @@
     <ClInclude Include="block.h" />
     <ClInclude Include="chunk.h" />
     <ClInclude Include="globalSettings.h" />
+    <ClInclude Include="nibble.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>
