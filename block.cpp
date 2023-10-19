@@ -139,7 +139,7 @@ Block::Block()
 {
 }
 
-Block::Block(uint8_t x, uint8_t y, uint8_t z, int8_t blockType, uint8_t chunkNumber) {
+Block::Block(uint8_t x, uint8_t y, uint8_t z, int8_t blockType, uint16_t chunkNumber) {
 	xz = 0;
 	xz = setLowerNibble(xz, x);
 	xz = setUpperNibble(xz, z);

@@ -5,7 +5,7 @@ class Block
 {
 public:
 	Block();
-	Block(uint8_t x, uint8_t y, uint8_t z, int8_t blockType, uint8_t chunkNumber);
+	Block(uint8_t x, uint8_t y, uint8_t z, int8_t blockType, uint16_t chunkNumber);
 	~Block();
 	void addGemometry(std::vector<float> &verts, std::vector<int>& triangles, std::vector<float>& uvs);
 private:
@@ -19,7 +19,7 @@ private:
 	int8_t blockType;
 	uint8_t y;
 	char xz;
-	uint8_t chunkNumber;
+	uint16_t chunkNumber;
 };
 
 
