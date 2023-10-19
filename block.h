@@ -14,4 +14,5 @@ private:
 	int x, y, z;
 };
 
+
 #endif
