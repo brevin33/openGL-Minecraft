@@ -157,7 +157,7 @@ int8_t Block::getLeftBlockType()
 		return world.getBlockAt(x-1,y,z,chunkNumber)->blockType;
 	else if(chunkNumber % LOADEDCHUNKWIDTH != 0)
 		return world.getBlockAt(CHUNKWIDTH - 1, y, z, chunkNumber - 1)->blockType;
-	return -1;
+	return 1;
 }
 
 int8_t Block::getRightBlockType()
@@ -166,7 +166,7 @@ int8_t Block::getRightBlockType()
 		return world.getBlockAt(x + 1, y, z, chunkNumber)->blockType;
 	else if (chunkNumber % LOADEDCHUNKWIDTH != LOADEDCHUNKWIDTH - 1)
 		return world.getBlockAt(0, y, z, chunkNumber + 1)->blockType;
-	return -1;
+	return 1;
 }
 
 
@@ -174,7 +174,7 @@ int8_t Block::getTopBlockType()
 {
 	if (y + 1 < CHUNKHEIGHT)
 		return world.getBlockAt(x, y + 1, z, chunkNumber)->blockType;
-	return 1;
+	return -1;
 }
 
 
@@ -182,7 +182,7 @@ int8_t Block::getBottomBlockType()
 {
 	if (y - 1 > 0)
 		return world.getBlockAt(x, y - 1, z, chunkNumber)->blockType;
-	return -1;
+	return 1;
 }
 
 int8_t Block::getFrontBlockType()
@@ -191,32 +191,33 @@ int8_t Block::getFrontBlockType()
 		return world.getBlockAt(x, y, z - 1, chunkNumber)->blockType;
 	else if (chunkNumber - LOADEDCHUNKWIDTH >= 0)
 		return world.getBlockAt(x, y, CHUNKWIDTH - 1, chunkNumber - LOADEDCHUNKWIDTH)->blockType;
-	return -1;
+	return 1;
 }
 
 int8_t Block::getBackBlockType()
 {
-	if (z - 1 > 0)
-		return world.getBlockAt(x, y, z - 1, chunkNumber)->blockType;
+	if (z + 1 < CHUNKWIDTH)
+		return world.getBlockAt(x, y, z + 1, chunkNumber)->blockType;
 	else if (chunkNumber + LOADEDCHUNKWIDTH < LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH)
 		return world.getBlockAt(x, y, 0, chunkNumber + LOADEDCHUNKWIDTH)->blockType;
-	return -1;
+	return 1;
 }
 
 
 
 void Block::addGemometry(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs)
 {
+	if (blockType == AIR) return;
 	if (getLeftBlockType() < 0)
-		addTopFace(verts,triangles,uvs,x,y,z);
+		addLeftFace(verts,triangles,uvs,x,y,z);
 	if (getRightBlockType() < 0)
-		addTopFace(verts, triangles, uvs, x, y, z);
+		addRightFace(verts, triangles, uvs, x, y, z);
 	if (getTopBlockType() < 0)
 		addTopFace(verts, triangles, uvs, x, y, z);
 	if (getBottomBlockType() < 0)
-		addTopFace(verts, triangles, uvs, x, y, z);
+		addBottomFace(verts, triangles, uvs, x, y, z);
 	if (getFrontBlockType() < 0)
-		addTopFace(verts, triangles, uvs, x, y, z);
+		addFrontFace(verts, triangles, uvs, x, y, z);
 	if (getBackBlockType() < 0)
-		addTopFace(verts, triangles, uvs, x, y, z);
+		addBackFace(verts, triangles, uvs, x, y, z);
 }

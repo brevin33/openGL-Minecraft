@@ -39,6 +39,7 @@ void Chunk::createMesh() {
         Block b = blocks[i];
 		b.addGemometry(vertices,triangles,uvs);
 	}
+	int test = 1;
 	// send to gpu
 }
 
@@ -52,5 +53,5 @@ Block* Chunk::getBlockAt(uint8_t x, uint8_t y, uint8_t z)
 }
 
 Block Chunk::GenorateBlock(uint8_t x, uint8_t y, uint8_t z) {
-	return Block(x, y, z, 1, chunkIndex);
+	return Block(x, y, z, DIRT, chunkIndex);
 }
