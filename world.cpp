@@ -16,7 +16,6 @@ World::World()
 	}
 	for (int i = 0; i < LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH; i++)
 	{
-		loadedChunks[i]->giveBlocksNeighbors();
 		loadedChunks[i]->createMesh();
 	}
 }
