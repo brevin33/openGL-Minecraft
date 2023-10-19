@@ -11,7 +11,7 @@ World::World()
 	{
 		for (int z = 0; z < LOADEDCHUNKWIDTH; z++)
 		{
-			loadedChunks[z * LOADEDCHUNKWIDTH + x] = new Chunk(z * CHUNKWIDTH, x * CHUNKWIDTH, z * LOADEDCHUNKWIDTH + x, this);
+			loadedChunks[z * LOADEDCHUNKWIDTH + x] = new Chunk(z * CHUNKWIDTH, x * CHUNKWIDTH, z * LOADEDCHUNKWIDTH + x);
 		}
 	}
 	for (int i = 0; i < LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH; i++)
@@ -33,9 +33,9 @@ void World::update(glm::vec2 playerPos, float dt)
 	}
 }
 
-Block* World::getBlockAtAndHandelNotLoaded(int x, int y, int z, int chunkNumber, Block* block)
+Block* World::getBlockAt(int x, int y, int z, int chunkNumber)
 {
-	return nullptr;
+	return loadedChunks[chunkNumber]->getBlockAt(x,y,z);
 }
 
 void World::loadChunks()

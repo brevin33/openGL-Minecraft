@@ -12,6 +12,7 @@ public:
 private:
 	int blockType;
 	int x, y, z;
+	uint8_t chunkNumber;
 };
 
 

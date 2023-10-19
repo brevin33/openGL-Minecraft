@@ -1,4 +1,6 @@
 #include "block.h"
+#include "world.h"
+#include "globalSettings.h"
 #include <vector>
 inline void addTopFace(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs, int x, int y, int z) {
 	int size = triangles.size();
@@ -134,6 +136,12 @@ inline void addBackFace(std::vector<float>& verts, std::vector<int>& triangles, 
 
 Block::Block()
 {
+	left = nullptr;
+	up = nullptr;
+	right = nullptr;
+	down = nullptr;
+	front = nullptr;
+	back = nullptr;
 }
 
 Block::Block(int x, int y, int z,int blockType) {
@@ -141,25 +149,37 @@ Block::Block(int x, int y, int z,int blockType) {
 	this->y = y;
 	this->z = z;
 	this->blockType = blockType;
-	left, right, up, down, front, back = NULL;
+	left = nullptr;
+	up = nullptr;
+	right = nullptr;
+	down = nullptr;
+	front = nullptr;
+	back = nullptr;
 }
 
 Block::~Block()
 {
 }
 
+
 void Block::addGemometry(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs)
 {
-	if (up != NULL && up->blockType < 0)
-		addTopFace(verts,triangles,uvs,x,y,z);
-	if (down != NULL && down->blockType < 0)
-		addBottomFace(verts, triangles, uvs, x, y, z);
-	if (left != NULL && left->blockType < 0)
-		addLeftFace(verts, triangles, uvs, x, y, z);
-	if (right != NULL && right->blockType < 0)
-		addRightFace(verts, triangles, uvs, x, y, z);
-	if (front != NULL && front->blockType < 0)
-		addFrontFace(verts, triangles, uvs, x, y, z);
-	if (back != NULL && back->blockType < 0)
-		addBackFace(verts, triangles, uvs, x, y, z);
+	if (up != nullptr)
+		if(up->blockType < 0)
+			addTopFace(verts,triangles,uvs,x,y,z);
+	if (down != nullptr)
+		if (down->blockType < 0)
+			addBottomFace(verts, triangles, uvs, x, y, z);
+	if (left != nullptr)
+		if (left->blockType < 0)
+			addLeftFace(verts, triangles, uvs, x, y, z);
+	if (right != nullptr)
+		if (right->blockType < 0)
+			addRightFace(verts, triangles, uvs, x, y, z);
+	if (front != nullptr)
+		if (front->blockType < 0)
+			addFrontFace(verts, triangles, uvs, x, y, z);
+	if (back != nullptr)
+		if (back->blockType < 0)
+			addBackFace(verts, triangles, uvs, x, y, z);
 }

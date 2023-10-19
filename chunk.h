@@ -11,18 +11,18 @@ class Chunk
 {
 public:
 	Chunk();
-	Chunk(int x, int z, int chunkIndex, World* w);
+	Chunk(int x, int z, int chunkIndex);
 	~Chunk();
 	void createMesh();
 	void giveBlocksNeighbors();
 	void update(float dt);
+	Block* getBlockAt(int x, int y, int z);
 
 private:
 	Block GenorateBlock(int x, int y, int z);
 
 	int chunkIndex;
 	int wx, wz;
-	World *world;
 	std::vector<float> vertices;
 	std::vector<float> uvs;
 	std::vector<int> triangles;

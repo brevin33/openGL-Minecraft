@@ -13,7 +13,7 @@ public:
 	World();
 	~World();
 	void update(glm::vec2 playerPos, float dt);
-	Block* getBlockAtAndHandelNotLoaded(int x, int y, int z, int chunkNumber, Block* block);
+	Block* getBlockAt(int x, int y, int z, int chunkNumber);
 
 private:
 	void loadChunks();
