@@ -130,6 +130,8 @@
     <ClCompile Include="block.cpp" />
     <ClCompile Include="chunk.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="stbi_image_help.cpp" />
+    <ClCompile Include="texture.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -138,9 +140,13 @@
     <ClInclude Include="globalSettings.h" />
     <ClInclude Include="nibble.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="texture.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="block.frag" />
+    <None Include="block.vert" />
     <None Include="screenSpace.vert" />
     <None Include="solidColor.frag" />
   </ItemGroup>

@@ -30,6 +30,12 @@
     <ClCompile Include="block.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stbi_image_help.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">
@@ -50,12 +56,24 @@
     <ClInclude Include="nibble.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="screenSpace.vert">
       <Filter>Source Files\Shaders</Filter>
     </None>
     <None Include="solidColor.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="block.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="block.frag">
       <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>

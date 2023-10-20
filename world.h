@@ -12,6 +12,7 @@ class World
 public:
 	World();
 	~World();
+	void setup();
 	void update(glm::vec2 playerPos, float dt);
 	Block* getBlockAt(int x, int y, int z, int chunkNumber);
 

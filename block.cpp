@@ -3,7 +3,7 @@
 #include "globalSettings.h"
 #include "nibble.h"
 #include <vector>
-inline void addTopFace(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
 	int size = triangles.size();
 	float faceVerts[] = {
 		x, y, z,
@@ -25,7 +25,7 @@ inline void addTopFace(std::vector<float>& verts, std::vector<int>& triangles, s
 	}
 }
 
-inline void addBottomFace(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
 	int size = triangles.size();
 	float faceVerts[] = {
 		x, y-1, z,
@@ -47,7 +47,7 @@ inline void addBottomFace(std::vector<float>& verts, std::vector<int>& triangles
 	}
 }
 
-inline void addLeftFace(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
 	int size = triangles.size();
 	float faceVerts[] = {
 		x, y, z,
@@ -69,7 +69,7 @@ inline void addLeftFace(std::vector<float>& verts, std::vector<int>& triangles, 
 	}
 }
 
-inline void addRightFace(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
 	int size = triangles.size();
 	float faceVerts[] = {
 		x + 1, y, z,
@@ -91,7 +91,7 @@ inline void addRightFace(std::vector<float>& verts, std::vector<int>& triangles,
 	}
 }
 
-inline void addFrontFace(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
 	int size = triangles.size();
 	float faceVerts[] = {
 		x, y, z - 1,
@@ -113,7 +113,7 @@ inline void addFrontFace(std::vector<float>& verts, std::vector<int>& triangles,
 	}
 }
 
-inline void addBackFace(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addBackFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
 	int size = triangles.size();
 	float faceVerts[] = {
 		x, y, z,
@@ -207,7 +207,7 @@ int8_t Block::getBackBlockType(uint8_t x, uint8_t z)
 
 
 
-void Block::addGemometry(std::vector<float>& verts, std::vector<int>& triangles, std::vector<float>& uvs)
+void Block::addGemometry(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs)
 {
 	if (blockType == AIR) return;
 	uint8_t x = LO_NIBBLE(xz);

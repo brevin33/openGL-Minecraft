@@ -1,3 +1,9 @@
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "chunk.h"
 #include "block.h"
 #include "globalSettings.h"
@@ -28,6 +34,9 @@ Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex)
 
 Chunk::~Chunk()
 {
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 }
 
 void Chunk::createMesh() {
@@ -39,11 +48,22 @@ void Chunk::createMesh() {
 		blocks[i].addGemometry(vertices,triangles,uvs);
 	}
 	int test = 1;
-	// send to gpu
+
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * triangles.size(), &triangles[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 }
 
 void Chunk::update(float dt)
 {
+
 }
 
 Block* Chunk::getBlockAt(uint8_t x, uint8_t y, uint8_t z)

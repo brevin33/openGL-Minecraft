@@ -19,12 +19,14 @@ public:
 
 private:
 	Block GenorateBlock(uint8_t x, uint8_t y, uint8_t z);
-
+	unsigned int VBO;
+	unsigned int VAO;
+	unsigned int EBO;
 	uint8_t chunkIndex;
 	int wx, wz;
 	std::vector<float> vertices;
 	std::vector<float> uvs;
-	std::vector<int> triangles;
+	std::vector<unsigned int> triangles;
 	Block blocks[CHUNKWIDTH*CHUNKHEIGHT*CHUNKWIDTH];
 };
 

@@ -14,14 +14,17 @@ World::World()
 			loadedChunks[z * LOADEDCHUNKWIDTH + x] = new Chunk(z * CHUNKWIDTH, x * CHUNKWIDTH, z * LOADEDCHUNKWIDTH + x);
 		}
 	}
-	for (int i = 0; i < LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH; i++)
-	{
-		loadedChunks[i]->createMesh();
-	}
 }
 
 World::~World()
 {
+}
+
+void World::setup() {
+	for (int i = 0; i < LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH; i++)
+	{
+		loadedChunks[i]->createMesh();
+	}
 }
 
 void World::update(glm::vec2 playerPos, float dt)
