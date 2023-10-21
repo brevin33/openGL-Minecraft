@@ -16,6 +16,7 @@ private:
 	int8_t getFrontBlockType(uint8_t x, uint8_t z);
 	int8_t getBackBlockType(uint8_t x, uint8_t z);
 
+private:
 	int8_t blockType;
 	uint8_t y;
 	char xz;

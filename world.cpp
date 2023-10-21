@@ -21,6 +21,9 @@ World::~World()
 }
 
 void World::setup() {
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 	for (int i = 0; i < LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH; i++)
 	{
 		loadedChunks[i]->createMesh();

@@ -4,18 +4,18 @@
 #include "nibble.h"
 #include <vector>
 inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
-	int size = triangles.size();
+	int size = verts.size()/5;
 	float faceVerts[] = {
-		x, y, z,
-		x, y, z + 1,
-		x + 1, y, z,
-		x + 1, y, z + 1,
+		x, y, z, 0, 0,
+		x, y, z + 1, 0, 1,
+		x + 1, y, z, 1, 1,
+		x + 1, y, z + 1, 1, 0,
 	};
 	int faceTriangles[] = {
 		size, size + 1, size + 3,
 		size, size + 3, size + 2,
 	};
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		verts.push_back(faceVerts[i]);
 	}
@@ -26,18 +26,18 @@ inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& tri
 }
 
 inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
-	int size = triangles.size();
+	int size = verts.size()/5;
 	float faceVerts[] = {
-		x, y-1, z,
-		x, y-1, z + 1,
-		x + 1, y-1, z,
-		x + 1, y-1, z + 1,
+		x, y-1, z, 0, 0,
+		x, y-1, z + 1, 0, 1,
+		x + 1, y-1, z, 1, 1,
+		x + 1, y-1, z + 1, 1, 0
 	};
 	int faceTriangles[] = {
 		size, size + 3, size + 1,
 		size, size + 2,size + 3,
 	};
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		verts.push_back(faceVerts[i]);
 	}
@@ -48,18 +48,18 @@ inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& 
 }
 
 inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
-	int size = triangles.size();
+	int size = verts.size()/5;
 	float faceVerts[] = {
-		x, y, z,
-		x, y, z + 1,
-		x, y - 1, z + 1,
-		x, y - 1, z,
+		x, y, z, 0, 0,
+		x, y, z + 1, 0, 1,
+		x, y - 1, z + 1, 1, 1,
+		x, y - 1, z, 1, 0,
 	};
 	int faceTriangles[] = {
 		size, size + 3, size + 2,
 		size, size + 2,size + 1,
 	};
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		verts.push_back(faceVerts[i]);
 	}
@@ -70,18 +70,18 @@ inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& tr
 }
 
 inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
-	int size = triangles.size();
+	int size = verts.size()/5;
 	float faceVerts[] = {
-		x + 1, y, z,
-		x + 1, y, z + 1,
-		x + 1, y - 1, z + 1,
-		x + 1, y - 1, z,
+		x + 1, y, z, 0, 0,
+		x + 1, y, z + 1, 0, 1,
+		x + 1, y - 1, z + 1, 1, 1,
+		x + 1, y - 1, z, 1, 0,
 	};
 	int faceTriangles[] = {
 		size, size + 2, size + 3,
 		size, size + 1,size + 2,
 	};
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		verts.push_back(faceVerts[i]);
 	}
@@ -92,18 +92,18 @@ inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& t
 }
 
 inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
-	int size = triangles.size();
+	int size = verts.size()/5;
 	float faceVerts[] = {
-		x, y, z - 1,
-		x + 1, y, z - 1,
-		x + 1, y - 1, z - 1,
-		x, y - 1, z - 1,
+		x, y, z - 1, 0, 0,
+		x + 1, y, z - 1, 0, 1,
+		x + 1, y - 1, z - 1, 1, 1,
+		x, y - 1, z - 1, 1, 0,
 	};
 	int faceTriangles[] = {
 		size, size + 2, size + 1,
 		size, size + 3,size + 2,
 	};
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		verts.push_back(faceVerts[i]);
 	}
@@ -114,18 +114,18 @@ inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& t
 }
 
 inline void addBackFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
-	int size = triangles.size();
+	int size = verts.size()/5;
 	float faceVerts[] = {
-		x, y, z,
-		x + 1, y, z,
-		x + 1, y - 1, z,
-		x, y - 1, z,
+		x, y, z, 0, 0,
+		x + 1, y, z, 0, 1,
+		x + 1, y - 1, z, 1, 1,
+		x, y - 1, z, 1, 0,
 	};
 	int faceTriangles[] = {
 		size, size + 1, size + 2,
 		size, size + 2,size + 3,
 	};
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		verts.push_back(faceVerts[i]);
 	}

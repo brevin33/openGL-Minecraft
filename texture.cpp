@@ -1,7 +1,7 @@
 #include <iostream>
 #include "texture.h"
 #include "stb_image.h"
-Texture::Texture(std::string path, bool flip = false)
+Texture::Texture(std::string path, bool flip)
 {
     texture = 0;
     glGenTextures(1, &texture);
@@ -27,7 +27,7 @@ Texture::Texture(std::string path, bool flip = false)
     stbi_image_free(data);
 }
 
-void Texture::bind(int textureNum = 0)
+void Texture::bind(int textureNum)
 {
     glActiveTexture(GL_TEXTURE0 + textureNum);
     glBindTexture(GL_TEXTURE_2D, texture);

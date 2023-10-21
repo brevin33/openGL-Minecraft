@@ -22,6 +22,7 @@ private:
 	unsigned int VBO;
 	unsigned int VAO;
 	unsigned int EBO;
+	glm::mat4 model, view, projection;
 	uint8_t chunkIndex;
 	int wx, wz;
 	std::vector<float> vertices;
