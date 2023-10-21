@@ -3,13 +3,18 @@
 #include "globalSettings.h"
 #include "nibble.h"
 #include <vector>
-inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
 	int size = verts.size()/5;
+	float uvx = (suvx * 16) / 256.0;
+	float uvx2 = ((suvx+1) * 16) / 256.0;
+	float uvy = (suvy * 16) / 256.0;
+	float uvy2 = ((suvy+1) * 16) / 256.0;
+
 	float faceVerts[] = {
-		x, y, z, 0, 0,
-		x, y, z + 1, 0, 1,
-		x + 1, y, z, 1, 1,
-		x + 1, y, z + 1, 1, 0,
+		x, y, z, uvx, uvy,
+		x, y, z + 1, uvx, uvy2,
+		x + 1, y, z, uvx2, uvy,
+		x + 1, y, z + 1, uvx2, uvy2,
 	};
 	int faceTriangles[] = {
 		size, size + 1, size + 3,
@@ -25,13 +30,17 @@ inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& tri
 	}
 }
 
-inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
 	int size = verts.size()/5;
+	float uvx = (suvx * 16) / 256.0;
+	float uvx2 = ((suvx + 1) * 16) / 256.0;
+	float uvy = (suvy * 16) / 256.0;
+	float uvy2 = ((suvy + 1) * 16) / 256.0;
 	float faceVerts[] = {
-		x, y-1, z, 0, 0,
-		x, y-1, z + 1, 0, 1,
-		x + 1, y-1, z, 1, 1,
-		x + 1, y-1, z + 1, 1, 0
+		x, y-1, z, uvx, uvy,
+		x, y-1, z + 1, uvx, uvy2,
+		x + 1, y-1, z, uvx2, uvy,
+		x + 1, y-1, z + 1, uvx2, uvy + (1.0 / 16.0),
 	};
 	int faceTriangles[] = {
 		size, size + 3, size + 1,
@@ -47,13 +56,17 @@ inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& 
 	}
 }
 
-inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
 	int size = verts.size()/5;
+	float uvx = (suvx * 16) / 256.0;
+	float uvx2 = ((suvx + 1) * 16) / 256.0;
+	float uvy = (suvy * 16) / 256.0;
+	float uvy2 = ((suvy + 1) * 16) / 256.0;
 	float faceVerts[] = {
-		x, y, z, 0, 0,
-		x, y, z + 1, 0, 1,
-		x, y - 1, z + 1, 1, 1,
-		x, y - 1, z, 1, 0,
+		x, y, z, uvx, uvy,
+		x, y, z + 1, uvx, uvy2,
+		x, y - 1, z + 1, uvx2, uvy2,
+		x, y - 1, z, uvx2, uvy,
 	};
 	int faceTriangles[] = {
 		size, size + 3, size + 2,
@@ -69,13 +82,17 @@ inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& tr
 	}
 }
 
-inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
 	int size = verts.size()/5;
+	float uvx = (suvx * 16) / 256.0;
+	float uvx2 = ((suvx + 1) * 16) / 256.0;
+	float uvy = (suvy * 16) / 256.0;
+	float uvy2 = ((suvy + 1) * 16) / 256.0;
 	float faceVerts[] = {
-		x + 1, y, z, 0, 0,
-		x + 1, y, z + 1, 0, 1,
-		x + 1, y - 1, z + 1, 1, 1,
-		x + 1, y - 1, z, 1, 0,
+		x + 1, y, z, uvx, uvy,
+		x + 1, y, z + 1, uvx, uvy2,
+		x + 1, y - 1, z + 1, uvx2, uvy2,
+		x + 1, y - 1, z, uvx2, uvy,
 	};
 	int faceTriangles[] = {
 		size, size + 2, size + 3,
@@ -91,13 +108,17 @@ inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& t
 	}
 }
 
-inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
 	int size = verts.size()/5;
+	float uvx = (suvx * 16) / 256.0;
+	float uvx2 = ((suvx + 1) * 16) / 256.0;
+	float uvy = (suvy * 16) / 256.0;
+	float uvy2 = ((suvy + 1) * 16) / 256.0;
 	float faceVerts[] = {
-		x, y, z - 1, 0, 0,
-		x + 1, y, z - 1, 0, 1,
-		x + 1, y - 1, z - 1, 1, 1,
-		x, y - 1, z - 1, 1, 0,
+		x, y, z - 1, uvx, uvy,
+		x + 1, y, z - 1, uvx, uvy2,
+		x + 1, y - 1, z - 1, uvx2, uvy2,
+		x, y - 1, z - 1, uvx2, uvy,
 	};
 	int faceTriangles[] = {
 		size, size + 2, size + 1,
@@ -113,13 +134,17 @@ inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& t
 	}
 }
 
-inline void addBackFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z) {
+inline void addBackFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, std::vector<float>& uvs, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
 	int size = verts.size()/5;
+	float uvx = (suvx * 16) / 256.0;
+	float uvx2 = ((suvx + 1) * 16) / 256.0;
+	float uvy = (suvy * 16) / 256.0;
+	float uvy2 = ((suvy + 1) * 16) / 256.0;
 	float faceVerts[] = {
-		x, y, z, 0, 0,
-		x + 1, y, z, 0, 1,
-		x + 1, y - 1, z, 1, 1,
-		x, y - 1, z, 1, 0,
+		x, y, z, uvx, uvy,
+		x + 1, y, z, uvx, uvy2,
+		x + 1, y - 1, z, uvx2, uvy2,
+		x, y - 1, z, uvx2, uvy,
 	};
 	int faceTriangles[] = {
 		size, size + 1, size + 2,
@@ -213,15 +238,63 @@ void Block::addGemometry(std::vector<float>& verts, std::vector<unsigned int>& t
 	uint8_t x = LO_NIBBLE(xz);
 	uint8_t z = HI_NIBBLE(xz);
 	if (getLeftBlockType(x,z) < 0)
-		addLeftFace(verts,triangles,uvs,x,y,z);
+		switch (blockType)
+		{
+		case DIRT:
+			addLeftFace(verts, triangles, uvs, x, y, z,2,0);
+			break;
+
+		default:
+			break;
+		}
 	if (getRightBlockType(x,z) < 0)
-		addRightFace(verts, triangles, uvs, x, y, z);
+		switch (blockType)
+		{
+		case DIRT:
+			addRightFace(verts, triangles, uvs, x, y, z, 2, 0);
+			break;
+
+		default:
+			break;
+		}
 	if (getTopBlockType(x,z) < 0)
-		addTopFace(verts, triangles, uvs, x, y, z);
+		switch (blockType)
+		{
+		case DIRT:
+			addTopFace(verts, triangles, uvs, x, y, z, 2, 0);
+			break;
+
+		default:
+			break;
+		}
 	if (getBottomBlockType(x,z) < 0)
-		addBottomFace(verts, triangles, uvs, x, y, z);
+		switch (blockType)
+		{
+		case DIRT:
+			addBottomFace(verts, triangles, uvs, x, y, z, 2, 0);
+			break;
+
+		default:
+			break;
+		}
 	if (getFrontBlockType(x,z) < 0)
-		addFrontFace(verts, triangles, uvs, x, y, z);
+		switch (blockType)
+		{
+		case DIRT:
+			addFrontFace(verts, triangles, uvs, x, y, z, 2, 0);
+			break;
+
+		default:
+			break;
+		}
 	if (getBackBlockType(x,z) < 0)
-		addBackFace(verts, triangles, uvs, x, y, z);
+		switch (blockType)
+		{
+		case DIRT:
+			addBackFace(verts, triangles, uvs, x, y, z, 2, 0);
+			break;
+
+		default:
+			break;
+		}
 }

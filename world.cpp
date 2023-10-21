@@ -32,6 +32,7 @@ void World::setup() {
 
 void World::update(glm::vec2 playerPos, float dt)
 {
+	blockTexture.bind();
 	for (int i = 0; i < LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH; i++)
 	{
 		loadedChunks[i]->update(dt);

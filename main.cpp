@@ -9,6 +9,7 @@
 #include "shader.h"
 #include "world.h"
 #include "camera.h"
+#include "texture.h"
 
 
 int WIDTH = 800 * 4 * .8;
@@ -27,6 +28,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 float dt = 0.0f;	
 float lastFrame = 0.0f;
+
+Texture blockTexture;
 
 
 float TRIANGLEVERTS[] = {
@@ -162,6 +165,8 @@ void loadVisuals() {
     shaders[block].use();
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
     shaders[block].setMat4("projection", projection);
+
+    blockTexture.Load("terrain.png");
 
     world.setup();
 

@@ -8,7 +8,8 @@
 class Texture
 {
 public:
-	Texture(std::string path, bool flip = false);
+	Texture();
+	void Load(const char* path, bool flip = false);
 
 	void bind(int textureNum = 0);
 
