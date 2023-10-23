@@ -144,21 +144,9 @@ void cleanup() {
         shaders[i].remove();
     }
     glfwTerminate();
-}
+} 
 
 void loadVisuals() {
-    // VBO and VAO and EBO
-    //glGenBuffers(1, &TriangleVBO);
-    //glGenBuffers(1, &QuadEBO);
-    //glGenVertexArrays(1, &TriangleVAO);
-    //glBindVertexArray(TriangleVAO);
-    //glBindBuffer(GL_ARRAY_BUFFER, TriangleVBO);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(TRIANGLEVERTS), TRIANGLEVERTS, GL_STATIC_DRAW);
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, QuadEBO);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    //glEnableVertexAttribArray(0);
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
 
     // Shader
     shaders.push_back(Shader("block.vert", "block.frag"));

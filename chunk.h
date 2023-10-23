@@ -26,7 +26,6 @@ private:
 	uint8_t chunkIndex;
 	int wx, wz;
 	std::vector<float> vertices;
-	std::vector<float> uvs;
 	std::vector<unsigned int> triangles;
 	Block blocks[CHUNKWIDTH*CHUNKHEIGHT*CHUNKWIDTH];
 };

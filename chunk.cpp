@@ -47,13 +47,12 @@ Chunk::~Chunk()
 void Chunk::createMesh() {
 	vertices.clear();
 	triangles.clear();
-	uvs.clear();
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
 	for (int i = 0; i < CHUNKWIDTH * CHUNKWIDTH * CHUNKHEIGHT; i++)
 	{
-		blocks[i].addGemometry(vertices,triangles,uvs);
+		blocks[i].addGemometry(vertices,triangles);
 	}
 	int test = 1;
 
