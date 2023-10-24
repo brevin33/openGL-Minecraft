@@ -9,6 +9,7 @@
 #define TEXTUREATLASWIDTH 256.0
 #define TEXTUREATLASHEIGHT 256.0
 #define SPRITEWIDTH 16
+#define BLOCKVAOCOUNT 24
 class World;
 class Chunk;
 class Block;
