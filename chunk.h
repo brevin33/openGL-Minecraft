@@ -11,14 +11,14 @@ class Chunk
 {
 public:
 	Chunk();
-	Chunk(int x, int z, uint8_t chunkIndex);
+	Chunk(int x, int z, uint8_t chunkIndex, std::vector<float>& TerrainNoiseValues);
 	~Chunk();
 	void createMesh();
 	void update(float dt);
 	Block* getBlockAt(uint8_t x, uint8_t y, uint8_t z);
 
 private:
-	Block GenorateBlock(uint8_t x, uint8_t y, uint8_t z);
+	Block GenorateBlock(uint8_t x, uint8_t y, uint8_t z, float NoiseValue);
 	unsigned int VBO;
 	unsigned int VAO;
 	unsigned int EBO;

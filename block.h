@@ -8,16 +8,18 @@ public:
 	Block(uint8_t x, uint8_t y, uint8_t z, int8_t blockType, uint16_t chunkNumber);
 	~Block();
 	void addGemometry(std::vector<float> &verts, std::vector<unsigned int>& triangles);
+	Block* getLeftBlock(uint8_t x, uint8_t z);
+	Block* getRightBlock(uint8_t x, uint8_t z);
+	Block* getTopBlock(uint8_t x, uint8_t z);
+	Block* getBottomBlock(uint8_t x, uint8_t z);
+	Block* getFrontBlock(uint8_t x, uint8_t z);
+	Block* getBackBlock(uint8_t x, uint8_t z);
 private:
-	int8_t getLeftBlockType(uint8_t x, uint8_t z);
-	int8_t getRightBlockType(uint8_t x, uint8_t z);
-	int8_t getTopBlockType(uint8_t x, uint8_t z);
-	int8_t getBottomBlockType(uint8_t x, uint8_t z);
-	int8_t getFrontBlockType(uint8_t x, uint8_t z);
-	int8_t getBackBlockType(uint8_t x, uint8_t z);
+
+public:
+	int8_t blockType;
 
 private:
-	int8_t blockType;
 	uint8_t y;
 	char xz;
 	uint16_t chunkNumber;

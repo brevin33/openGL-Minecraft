@@ -14,7 +14,7 @@ Chunk::Chunk(){
 
 }
 
-Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex)
+Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> &TerrainNoiseValues)
 {
     this->wx = worldX;
     this->wz = worldZ;
@@ -31,7 +31,7 @@ Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex)
 			for (int z = 0; z < CHUNKWIDTH; z++)
 			{
                 int blockI = z * CHUNKHEIGHT * CHUNKWIDTH + y * CHUNKWIDTH + x;
-				blocks[blockI] = GenorateBlock(x, y, z);
+				blocks[blockI] = GenorateBlock(x, y, z, (TerrainNoiseValues[z*CHUNKWIDTH+x] + 1) * 0.5f);
 			}
 		}
 	}
@@ -83,8 +83,8 @@ Block* Chunk::getBlockAt(uint8_t x, uint8_t y, uint8_t z)
     return &blocks[z * CHUNKHEIGHT * CHUNKWIDTH + y * CHUNKWIDTH + x];
 }
 
-Block Chunk::GenorateBlock(uint8_t x, uint8_t y, uint8_t z) {
-	if(y > 100)
+Block Chunk::GenorateBlock(uint8_t x, uint8_t y, uint8_t z, float NoiseValue) {
+	if(y > 93 + NoiseValue * 7)
 		return Block(x, y, z, AIR, chunkIndex);
 	return Block(x, y, z, DIRT, chunkIndex);
 }

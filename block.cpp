@@ -3,18 +3,44 @@
 #include "globalSettings.h"
 #include "nibble.h"
 #include <vector>
-inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
-	int size = verts.size()/5;
-	float uvx = (suvx * 16) / 256.0;
-	float uvx2 = ((suvx+1) * 16) / 256.0;
-	float uvy = (suvy * 16) / 256.0;
-	float uvy2 = ((suvy+1) * 16) / 256.0;
+
+Block dummyTransparentBlock(0,0,0,-1,0);
+Block dummyNonTransparentBlock(0, 0, 0, 1, 0);
+
+inline int isTransparent(Block* block) {
+	return block->blockType >= 0 ? 1 : 0;
+}
+
+inline float* ambientOcclusionTopFace(uint8_t x, uint8_t y, uint8_t z, Block* block) {
+	float occlusionValues[4];
+	Block* frontBlock = block->getFrontBlock(x,z);
+	Block* backBlock = block->getFrontBlock(x,z);
+	Block* leftBlock = block->getFrontBlock(x,z);
+	Block* rightBlock = block->getFrontBlock(x,z);
+	Block* frontLeftCorrner = frontBlock->getLeftBlock(x-1,z);
+	Block* frontRightCorrner = frontBlock->getRightBlock(x + 1, z);
+	Block* backLeftCorrner = backBlock->getLeftBlock(x - 1, z);
+	Block* backRightCorrner = backBlock->getRightBlock(x + 1, z);
+	occlusionValues[0] = isTransparent(backBlock) + isTransparent(leftBlock) + isTransparent(backLeftCorrner) * 0.5f;
+	occlusionValues[1] = isTransparent(frontBlock) + isTransparent(leftBlock) + isTransparent(frontLeftCorrner) * 0.5f;
+	occlusionValues[2] = isTransparent(frontBlock) + isTransparent(rightBlock) + isTransparent(frontRightCorrner) * 0.5f;
+	occlusionValues[3] = isTransparent(backBlock) + isTransparent(rightBlock) + isTransparent(frontLeftCorrner) * 0.5f;
+	return occlusionValues;
+}
+
+inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, uint8_t suvx, uint8_t suvy, Block* block) {
+	int size = verts.size()/6;
+	float uvx = (suvx * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvx2 = ((suvx+1) * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvy = (suvy * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
+	float uvy2 = ((suvy+1) * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
+	float* occlusionValues = ambientOcclusionTopFace(x,y,z,block);
 
 	float faceVerts[] = {
-		x, y, z, uvx, uvy,
-		x, y, z + 1, uvx, uvy2,
-		x + 1, y, z, uvx2, uvy,
-		x + 1, y, z + 1, uvx2, uvy2,
+		x, y, z, uvx, uvy, occlusionValues[0],
+		x, y, z - 1, uvx, uvy2, occlusionValues[1],
+		x + 1, y, z, uvx2, uvy, occlusionValues[2],
+		x + 1, y, z - 1, uvx2, uvy2, occlusionValues[3],
 	};
 	int faceTriangles[] = {
 		size, size + 1, size + 3,
@@ -30,17 +56,17 @@ inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& tri
 	}
 }
 
-inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
-	int size = verts.size()/5;
-	float uvx = (suvx * 16) / 256.0;
-	float uvx2 = ((suvx + 1) * 16) / 256.0;
-	float uvy = (suvy * 16) / 256.0;
-	float uvy2 = ((suvy + 1) * 16) / 256.0;
+inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, uint8_t suvx, uint8_t suvy, Block* block) {
+	int size = verts.size()/6;
+	float uvx = (suvx * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvx2 = ((suvx+1) * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvy = (suvy * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
+	float uvy2 = ((suvy+1) * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
 	float faceVerts[] = {
 		x, y-1, z, uvx, uvy,
-		x, y-1, z + 1, uvx, uvy2,
+		x, y-1, z - 1, uvx, uvy2,
 		x + 1, y-1, z, uvx2, uvy,
-		x + 1, y-1, z + 1, uvx2, uvy + (1.0 / 16.0),
+		x + 1, y-1, z - 1, uvx2, uvy2,
 	};
 	int faceTriangles[] = {
 		size, size + 3, size + 1,
@@ -56,16 +82,16 @@ inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& 
 	}
 }
 
-inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
-	int size = verts.size()/5;
-	float uvx = (suvx * 16) / 256.0;
-	float uvx2 = ((suvx + 1) * 16) / 256.0;
-	float uvy = (suvy * 16) / 256.0;
-	float uvy2 = ((suvy + 1) * 16) / 256.0;
+inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, uint8_t suvx, uint8_t suvy, Block* block) {
+	int size = verts.size()/6;
+	float uvx = (suvx * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvx2 = ((suvx+1) * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvy = (suvy * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
+	float uvy2 = ((suvy+1) * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
 	float faceVerts[] = {
 		x, y, z, uvx, uvy,
-		x, y, z + 1, uvx, uvy2,
-		x, y - 1, z + 1, uvx2, uvy2,
+		x, y, z - 1, uvx, uvy2,
+		x, y - 1, z - 1, uvx2, uvy2,
 		x, y - 1, z, uvx2, uvy,
 	};
 	int faceTriangles[] = {
@@ -82,16 +108,16 @@ inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& tr
 	}
 }
 
-inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
-	int size = verts.size()/5;
-	float uvx = (suvx * 16) / 256.0;
-	float uvx2 = ((suvx + 1) * 16) / 256.0;
-	float uvy = (suvy * 16) / 256.0;
-	float uvy2 = ((suvy + 1) * 16) / 256.0;
+inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, uint8_t suvx, uint8_t suvy, Block* block) {
+	int size = verts.size()/6;
+	float uvx = (suvx * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvx2 = ((suvx+1) * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvy = (suvy * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
+	float uvy2 = ((suvy+1) * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
 	float faceVerts[] = {
 		x + 1, y, z, uvx, uvy,
-		x + 1, y, z + 1, uvx, uvy2,
-		x + 1, y - 1, z + 1, uvx2, uvy2,
+		x + 1, y, z - 1, uvx, uvy2,
+		x + 1, y - 1, z - 1, uvx2, uvy2,
 		x + 1, y - 1, z, uvx2, uvy,
 	};
 	int faceTriangles[] = {
@@ -108,12 +134,12 @@ inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& t
 	}
 }
 
-inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
-	int size = verts.size()/5;
-	float uvx = (suvx * 16) / 256.0;
-	float uvx2 = ((suvx + 1) * 16) / 256.0;
-	float uvy = (suvy * 16) / 256.0;
-	float uvy2 = ((suvy + 1) * 16) / 256.0;
+inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, uint8_t suvx, uint8_t suvy, Block* block) {
+	int size = verts.size()/6;
+	float uvx = (suvx * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvx2 = ((suvx+1) * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvy = (suvy * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
+	float uvy2 = ((suvy+1) * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
 	float faceVerts[] = {
 		x, y, z - 1, uvx, uvy,
 		x + 1, y, z - 1, uvx, uvy2,
@@ -134,12 +160,12 @@ inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& t
 	}
 }
 
-inline void addBackFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, int suvx, int suvy) {
-	int size = verts.size()/5;
-	float uvx = (suvx * 16) / 256.0;
-	float uvx2 = ((suvx + 1) * 16) / 256.0;
-	float uvy = (suvy * 16) / 256.0;
-	float uvy2 = ((suvy + 1) * 16) / 256.0;
+inline void addBackFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, uint8_t suvx, uint8_t suvy, Block* block) {
+	int size = verts.size()/6;
+	float uvx = (suvx * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvx2 = ((suvx+1) * SPRITEWIDTH) / TEXTUREATLASWIDTH;
+	float uvy = (suvy * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
+	float uvy2 = ((suvy+1) * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
 	float faceVerts[] = {
 		x, y, z, uvx, uvy,
 		x + 1, y, z, uvx, uvy2,
@@ -178,56 +204,56 @@ Block::~Block()
 }
 
 
-int8_t Block::getLeftBlockType(uint8_t x, uint8_t z)
+Block* Block::getLeftBlock(uint8_t x, uint8_t z)
 {
-	if (x - 1 > 0)
-		return world.getBlockAt(x-1,y,z,chunkNumber)->blockType;
+	if (x - 1 >= 0)
+		return world.getBlockAt(x-1,y,z,chunkNumber);
 	else if(chunkNumber % LOADEDCHUNKWIDTH != 0)
-		return world.getBlockAt(CHUNKWIDTH - 1, y, z, chunkNumber - 1)->blockType;
-	return 1;
+		return world.getBlockAt(CHUNKWIDTH - 1, y, z, chunkNumber - 1);
+	return &dummyNonTransparentBlock;
 }
 
-int8_t Block::getRightBlockType(uint8_t x, uint8_t z)
+Block* Block::getRightBlock(uint8_t x, uint8_t z)
 {
 	if (x + 1 < CHUNKWIDTH)
-		return world.getBlockAt(x + 1, y, z, chunkNumber)->blockType;
+		return world.getBlockAt(x + 1, y, z, chunkNumber);
 	else if (chunkNumber % LOADEDCHUNKWIDTH != LOADEDCHUNKWIDTH - 1)
-		return world.getBlockAt(0, y, z, chunkNumber + 1)->blockType;
-	return 1;
+		return world.getBlockAt(0, y, z, chunkNumber + 1);
+	return &dummyNonTransparentBlock;
 }
 
 
-int8_t Block::getTopBlockType(uint8_t x, uint8_t z)
+Block* Block::getTopBlock(uint8_t x, uint8_t z)
 {
 	if (y + 1 < CHUNKHEIGHT)
-		return world.getBlockAt(x, y + 1, z, chunkNumber)->blockType;
-	return -1;
+		return world.getBlockAt(x, y + 1, z, chunkNumber);
+	return &dummyTransparentBlock;
 }
 
 
-int8_t Block::getBottomBlockType(uint8_t x, uint8_t z)
+Block* Block::getBottomBlock(uint8_t x, uint8_t z)
 {
 	if (y - 1 > 0)
-		return world.getBlockAt(x, y - 1, z, chunkNumber)->blockType;
-	return 1;
+		return world.getBlockAt(x, y - 1, z, chunkNumber);
+	return &dummyNonTransparentBlock;
 }
 
-int8_t Block::getFrontBlockType(uint8_t x, uint8_t z)
+Block* Block::getFrontBlock(uint8_t x, uint8_t z)
 {
-	if (z - 1 > 0)
-		return world.getBlockAt(x, y, z - 1, chunkNumber)->blockType;
+	if (z - 1 >= 0)
+		return world.getBlockAt(x, y, z - 1, chunkNumber);
 	else if (chunkNumber - LOADEDCHUNKWIDTH >= 0)
-		return world.getBlockAt(x, y, CHUNKWIDTH - 1, chunkNumber - LOADEDCHUNKWIDTH)->blockType;
-	return 1;
+		return world.getBlockAt(x, y, CHUNKWIDTH - 1, chunkNumber - LOADEDCHUNKWIDTH);
+	return &dummyNonTransparentBlock;
 }
 
-int8_t Block::getBackBlockType(uint8_t x, uint8_t z)
+Block* Block::getBackBlock(uint8_t x, uint8_t z)
 {
 	if (z + 1 < CHUNKWIDTH)
-		return world.getBlockAt(x, y, z + 1, chunkNumber)->blockType;
+		return world.getBlockAt(x, y, z + 1, chunkNumber);
 	else if (chunkNumber + LOADEDCHUNKWIDTH < LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH)
-		return world.getBlockAt(x, y, 0, chunkNumber + LOADEDCHUNKWIDTH)->blockType;
-	return 1;
+		return world.getBlockAt(x, y, 0, chunkNumber + LOADEDCHUNKWIDTH);
+	return &dummyNonTransparentBlock;
 }
 
 
@@ -240,20 +266,27 @@ void Block::addGemometry(std::vector<float>& verts, std::vector<unsigned int>& t
 	{
 	case AIR:
 		return;
-	case DIRT:
-		if (getLeftBlockType(x, z) < 0)
-			addLeftFace(verts, triangles, x, y, z, 2, 0);
-		if (getRightBlockType(x, z) < 0)
-			addRightFace(verts, triangles, x, y, z, 2, 0);
-		if (getTopBlockType(x, z) < 0)
-			addTopFace(verts, triangles, x, y, z, 2, 0);
-		if (getBottomBlockType(x, z) < 0)
-			addBottomFace(verts, triangles, x, y, z, 2, 0);
-		if (getFrontBlockType(x, z) < 0)
-			addFrontFace(verts, triangles, x, y, z, 2, 0);
-		if (getBackBlockType(x, z) < 0)
-			addBackFace(verts, triangles, x, y, z, 2, 0);
+	case DIRT: {
+		Block* leftBlock = getLeftBlock(x, z);
+		Block* rightBlock = getRightBlock(x, z);
+		Block* topBlock = getTopBlock(x, z);
+		Block* bottomBlock = getBottomBlock(x, z);
+		Block* frontBlock = getFrontBlock(x, z);
+		Block* backBlock = getBackBlock(x, z);
+		if (leftBlock->blockType < 0)
+			addLeftFace(verts, triangles, x, y, z, 2, 0, leftBlock);
+		if (rightBlock->blockType < 0)
+			addRightFace(verts, triangles, x, y, z, 2, 0, rightBlock);
+		if (topBlock->blockType < 0)
+			addTopFace(verts, triangles, x, y, z, 2, 0, topBlock);
+		if (bottomBlock->blockType < 0)
+			addBottomFace(verts, triangles, x, y, z, 2, 0, bottomBlock);
+		if (frontBlock->blockType < 0)
+			addFrontFace(verts, triangles, x, y, z, 2, 0, frontBlock);
+		if (backBlock->blockType < 0)
+			addBackFace(verts, triangles, x, y, z, 2, 0, backBlock);
 		return;
+	}
 	default:
 		break;
 	}

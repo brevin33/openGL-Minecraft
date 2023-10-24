@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <FastNoise/FastNoise.h>
 class World
 {
 public:
@@ -19,7 +20,10 @@ public:
 private:
 	void loadChunks();
 	Chunk* loadedChunks[LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH];
+	int seed;
 	glm::vec3 playerPos;
+	glm::vec3 centerChunkPos;
+	FastNoise::SmartNode<FastNoise::Simplex> grassTerrain;
 };
 
 #endif
