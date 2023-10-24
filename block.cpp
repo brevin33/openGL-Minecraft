@@ -37,10 +37,10 @@ inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& tri
 	float* occlusionValues = ambientOcclusionTopAndBottomFace(block);
 
 	float faceVerts[] = {
-		x, y, z, uvx, uvy, occlusionValues[0] * 0.4f,
-		x, y, z - 1, uvx, uvy2, occlusionValues[1] * 0.4f,
-		x + 1, y, z, uvx2, uvy, occlusionValues[2] * 0.4f,
-		x + 1, y, z - 1, uvx2, uvy2, occlusionValues[3] * 0.4f,
+		x, y, z, uvx, uvy, occlusionValues[0] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y, z - 1, uvx, uvy2, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y, z, uvx2, uvy, occlusionValues[2] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y, z - 1, uvx2, uvy2, occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
 	};
 	int faceTriangles[] = {
 		size, size + 1, size + 3,
@@ -54,7 +54,7 @@ inline void addTopFace(std::vector<float>& verts, std::vector<unsigned int>& tri
 	{
 		triangles.push_back(faceTriangles[i]);
 	}
-	//delete occlusionValues;
+	 
 }
 
 
@@ -66,10 +66,10 @@ inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& 
 	float uvy2 = ((suvy+1) * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
 	float* occlusionValues = ambientOcclusionTopAndBottomFace(block);
 	float faceVerts[] = {
-		x, y-1, z, uvx, uvy, occlusionValues[0] * 0.4f,
-		x, y-1, z - 1, uvx, uvy2, occlusionValues[1] * 0.4f,
-		x + 1, y-1, z, uvx2, uvy, occlusionValues[2] * 0.4f,
-		x + 1, y-1, z - 1, uvx2, uvy2, occlusionValues[3] * 0.4f,
+		x, y-1, z, uvx, uvy, occlusionValues[0] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y-1, z - 1, uvx, uvy2, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y-1, z, uvx2, uvy, occlusionValues[2] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y-1, z - 1, uvx2, uvy2, occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
 	};
 	int faceTriangles[] = {
 		size, size + 3, size + 1,
@@ -83,7 +83,7 @@ inline void addBottomFace(std::vector<float>& verts, std::vector<unsigned int>& 
 	{
 		triangles.push_back(faceTriangles[i]);
 	}
-	//delete occlusionValues;
+	 
 }
 
 inline float* ambientOcclusionLeftAndRightFace(Block* block) {
@@ -113,10 +113,10 @@ inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& tr
 	float* occlusionValues = ambientOcclusionLeftAndRightFace(block);
 
 	float faceVerts[] = {
-		x, y, z, uvx, uvy, occlusionValues[0] * 0.4f,
-		x, y, z - 1, uvx, uvy2, occlusionValues[1] * 0.4f,
-		x, y - 1, z - 1, uvx2, uvy2, occlusionValues[2] * 0.4f,
-		x, y - 1, z, uvx2, uvy,occlusionValues[3] * 0.4f,
+		x, y, z, uvx, uvy, occlusionValues[0] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y, z - 1, uvx, uvy2, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y - 1, z - 1, uvx2, uvy2, occlusionValues[2] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y - 1, z, uvx2, uvy,occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
 	};
 	int faceTriangles[] = {
 		size, size + 3, size + 2,
@@ -130,7 +130,7 @@ inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& tr
 	{
 		triangles.push_back(faceTriangles[i]);
 	}
-	//delete occlusionValues;
+	 
 }
 
 
@@ -142,10 +142,10 @@ inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& t
 	float uvy2 = ((suvy+1) * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
 	float* occlusionValues = ambientOcclusionLeftAndRightFace(block);
 	float faceVerts[] = {
-		x + 1, y, z, uvx, uvy, occlusionValues[0] * 0.4f,
-		x + 1, y, z - 1, uvx, uvy2, occlusionValues[1] * 0.4f,
-		x + 1, y - 1, z - 1, uvx2, uvy2, occlusionValues[2] * 0.4f,
-		x + 1, y - 1, z, uvx2, uvy, occlusionValues[3] * 0.4f,
+		x + 1, y, z, uvx, uvy, occlusionValues[0] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y, z - 1, uvx, uvy2, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y - 1, z - 1, uvx2, uvy2, occlusionValues[2] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y - 1, z, uvx2, uvy, occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
 	};
 	int faceTriangles[] = {
 		size, size + 2, size + 3,
@@ -159,7 +159,7 @@ inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& t
 	{
 		triangles.push_back(faceTriangles[i]);
 	}
-	//delete occlusionValues;
+	 
 }
 
 inline float* ambientOcclusionFrontAndBackFace(Block* block) {
@@ -192,10 +192,10 @@ inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& t
 	float t3 = occlusionValues[2];
 	float t4 = occlusionValues[3];
 	float faceVerts[] = {
-		x, y, z - 1, uvx, uvy, occlusionValues[0] * 0.4f,
-		x + 1, y, z - 1, uvx, uvy2,occlusionValues[1] * 0.4f,
-		x + 1, y - 1, z - 1, uvx2, uvy2, occlusionValues[2] * 0.4f,
-		x, y - 1, z - 1, uvx2, uvy,occlusionValues[3] * 0.4f,
+		x, y, z - 1, uvx, uvy, occlusionValues[0] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y, z - 1, uvx, uvy2,occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y - 1, z - 1, uvx2, uvy2, occlusionValues[2] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y - 1, z - 1, uvx2, uvy,occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
 	};
 	int faceTriangles[] = {
 		size, size + 2, size + 1,
@@ -209,7 +209,7 @@ inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& t
 	{
 		triangles.push_back(faceTriangles[i]);
 	}
-	//delete occlusionValues;
+	 
 }
 
 inline void addBackFace(std::vector<float>& verts, std::vector<unsigned int>& triangles, uint8_t x, uint8_t y, uint8_t z, uint8_t suvx, uint8_t suvy, Block* block) {
@@ -220,10 +220,10 @@ inline void addBackFace(std::vector<float>& verts, std::vector<unsigned int>& tr
 	float uvy2 = ((suvy+1) * SPRITEWIDTH) / TEXTUREATLASHEIGHT;
 	float* occlusionValues = ambientOcclusionFrontAndBackFace(block);
 	float faceVerts[] = {
-		x, y, z, uvx, uvy, occlusionValues[0] * 0.4f,
-		x + 1, y, z, uvx, uvy2, occlusionValues[1] * 0.4f,
-		x + 1, y - 1, z, uvx2, uvy2, occlusionValues[2] * 0.4f,
-		x, y - 1, z, uvx2, uvy, occlusionValues[3] * 0.4f,
+		x, y, z, uvx, uvy, occlusionValues[0] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y, z, uvx, uvy2, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y - 1, z, uvx2, uvy2, occlusionValues[2] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y - 1, z, uvx2, uvy, occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
 	};
 	int faceTriangles[] = {
 		size, size + 1, size + 2,
@@ -237,7 +237,7 @@ inline void addBackFace(std::vector<float>& verts, std::vector<unsigned int>& tr
 	{
 		triangles.push_back(faceTriangles[i]);
 	}
-	//delete occlusionValues;
+	 
 }
 
 Block::Block()

@@ -5,6 +5,7 @@ layout (location = 2) in float aOcclusionValue;
 
 out vec2 TexCoord;
 out float OcclusionValue;
+out vec3 Pos;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -14,5 +15,6 @@ void main()
 {
 	gl_Position = projection * view * model * vec4(aPos, 1.0f);
 	TexCoord = vec2(aTexCoord.x, aTexCoord.y);
+	Pos = aPos;
 	OcclusionValue = aOcclusionValue;
 }

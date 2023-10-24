@@ -24,10 +24,11 @@ private:
 
 public:
 	int8_t blockType;
+	uint16_t chunkNumber;
+
 private:
 	char xz;
 	uint8_t y;
-	uint16_t chunkNumber;
 };
 
 

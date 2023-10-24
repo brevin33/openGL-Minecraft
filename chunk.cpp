@@ -14,7 +14,7 @@ Chunk::Chunk(){
 
 }
 
-Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> &TerrainNoiseValues)
+Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues)
 {
     this->wx = worldX;
     this->wz = worldZ;
@@ -37,6 +37,21 @@ Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> &Ter
 	}
 }
 
+void Chunk::setup() {
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+	glGenVertexArrays(1, &VAO);
+}
+
+void Chunk::updateChunkNumber(uint16_t chunkNum)
+{
+	chunkIndex = chunkNum;
+	for (size_t i = 0; i < CHUNKWIDTH * CHUNKWIDTH * CHUNKHEIGHT; i++)
+	{
+		blocks[i].chunkNumber = chunkNum;
+	}
+}
+
 Chunk::~Chunk()
 {
 	glDeleteVertexArrays(1, &VAO);
@@ -47,18 +62,15 @@ Chunk::~Chunk()
 void Chunk::createMesh() {
 	vertices.clear();
 	triangles.clear();
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
 	for (int i = 0; i < CHUNKWIDTH * CHUNKWIDTH * CHUNKHEIGHT; i++)
 	{
 		blocks[i].addGemometry(vertices,triangles);
 	}
-	int test = 1;
 
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-	glGenVertexArrays(1, &VAO);
+	readyToBindBuffers = true;
+}
+
+void Chunk::bindBuffers() {
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
@@ -70,10 +82,14 @@ void Chunk::createMesh() {
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(5 * sizeof(float)));
 	glEnableVertexAttribArray(2);
+	shouldDraw = true;
+	readyToBindBuffers = false;
 }
 
 void Chunk::update(float dt)
 {
+	if (readyToBindBuffers) bindBuffers();
+	if (!shouldDraw) return;
 	shaders[block].setMat4("model", model);
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);

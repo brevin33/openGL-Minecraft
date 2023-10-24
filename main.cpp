@@ -29,6 +29,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 float dt = 0.0f;	
 float lastFrame = 0.0f;
 
+glm::vec3 playerPos;
+
 Texture blockTexture;
 
 
@@ -53,8 +55,6 @@ void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-
-
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, dt);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -63,6 +63,7 @@ void processInput(GLFWwindow* window)
         camera.ProcessKeyboard(LEFT, dt);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, dt);
+    playerPos = camera.Position;
 }
 
 void render() {
@@ -75,13 +76,7 @@ void render() {
     {
         shaders[i].setMat4("view", view);
     }
-    world.update(glm::vec3(0,0,0),dt);
-
-
-    //glBindVertexArray(TriangleVAO);
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, QuadEBO);
-    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    //glDrawArrays(GL_TRIANGLES, 0, 3);
+    world.update(dt);
 }
 
 void update() {
@@ -158,6 +153,9 @@ void loadVisuals() {
 
     world.setup();
 
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CW);
 }
 
 int main()

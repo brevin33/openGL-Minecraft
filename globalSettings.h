@@ -10,6 +10,11 @@
 #define TEXTUREATLASHEIGHT 256.0
 #define SPRITEWIDTH 16
 #define BLOCKVAOCOUNT 24
+#define AMBIENTOCCLUSIONSTRENGTH .33f
+// blocks
+#define AIR -1
+#define DIRT 0
+#define GRASS 1
 class World;
 class Chunk;
 class Block;
@@ -19,11 +24,10 @@ extern Texture blockTexture;
 extern Block dummyTransparentBlock;
 extern Block dummyNonTransparentBlock;
 
+
 enum ShaderNames
 {
 	block,
 };
-#define AIR -1
-#define DIRT 0
-#define GRASS 1
+
 #endif
