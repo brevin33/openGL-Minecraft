@@ -32,7 +32,7 @@ float lastFrame = 0.0f;
 glm::vec3 playerPos;
 
 Texture blockTexture;
-
+    
 
 float TRIANGLEVERTS[] = {
      0.5f,  0.5f, 0.0f,  // top right
@@ -69,7 +69,7 @@ void processInput(GLFWwindow* window)
 void render() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    shaders[block].use();
+    shaders[blockShader].use();
     // camera/view transformation
     glm::mat4 view = camera.GetViewMatrix();
     for (int i = 0; i < shaders.size(); i++)
@@ -145,9 +145,9 @@ void loadVisuals() {
 
     // Shader
     shaders.push_back(Shader("block.vert", "block.frag"));
-    shaders[block].use();
+    shaders[blockShader].use();
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-    shaders[block].setMat4("projection", projection);
+    shaders[blockShader].setMat4("projection", projection);
 
     blockTexture.Load("terrain.png");
 

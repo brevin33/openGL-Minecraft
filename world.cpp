@@ -77,11 +77,12 @@ void World::updateLoadedChunks() {
 
 void World::moveCenterChunkForward()
 {
+	Chunk* delChunks[LOADEDCHUNKWIDTH];
 	for (size_t z = 0; z < 1; z++)
 	{
 		for (size_t x = 0; x < LOADEDCHUNKWIDTH; x++)
 		{
-			delete loadedChunks[z * LOADEDCHUNKWIDTH + x];
+			delChunks[x] = loadedChunks[z * LOADEDCHUNKWIDTH + x];
 		}
 	}
 	for (size_t z = 0; z < LOADEDCHUNKWIDTH; z++)
@@ -95,8 +96,7 @@ void World::moveCenterChunkForward()
 	{
 		for (size_t x = 0; x < LOADEDCHUNKWIDTH; x++)
 		{
-			createNewChunk(x, z);
-			loadedChunks[z * LOADEDCHUNKWIDTH + x]->setup();
+			overrideNewChunk(x, z, delChunks[x]);
 		}
 	}
 	for (size_t z = LOADEDCHUNKWIDTH - 2; z < LOADEDCHUNKWIDTH; z++)
@@ -110,12 +110,13 @@ void World::moveCenterChunkForward()
 
 void World::moveCenterChunkBack()
 {
+	Chunk* delChunks[LOADEDCHUNKWIDTH];
 	for (size_t z = LOADEDCHUNKWIDTH - 1; z < LOADEDCHUNKWIDTH; z++)
 	{
 		for (size_t x = 0; x < LOADEDCHUNKWIDTH; x++)
 		{
 			// ------------------------------------------------------------------------------------- save to file when added
-			delete loadedChunks[z * LOADEDCHUNKWIDTH + x];
+			delChunks[x] = loadedChunks[z * LOADEDCHUNKWIDTH + x];
 		}
 	}
 	for (size_t z = LOADEDCHUNKWIDTH - 1; z > 0; z--)
@@ -129,8 +130,7 @@ void World::moveCenterChunkBack()
 	{
 		for (size_t x = 0; x < LOADEDCHUNKWIDTH; x++)
 		{
-			createNewChunk(x, z);
-			loadedChunks[z * LOADEDCHUNKWIDTH + x]->setup();
+			overrideNewChunk(x, z, delChunks[x]);
 		}
 	}
 	for (size_t z = 0; z < 2; z++)
@@ -144,11 +144,12 @@ void World::moveCenterChunkBack()
 			
 void World::moveCenterChunkRight()
 {
+	Chunk* delChunks[LOADEDCHUNKWIDTH];
 	for (size_t x = 0; x < 1; x++)
 	{
 		for (size_t z = 0; z < LOADEDCHUNKWIDTH; z++)
 		{
-			delete loadedChunks[z * LOADEDCHUNKWIDTH + x];
+			delChunks[z] = loadedChunks[z * LOADEDCHUNKWIDTH + x];
 		}
 	}
 	for (size_t x = 0; x < LOADEDCHUNKWIDTH; x++)
@@ -162,8 +163,7 @@ void World::moveCenterChunkRight()
 	{
 		for (size_t z = 0; z < LOADEDCHUNKWIDTH; z++)
 		{
-			createNewChunk(x, z);
-			loadedChunks[z * LOADEDCHUNKWIDTH + x]->setup();
+			overrideNewChunk(x, z, delChunks[z]);
 		}
 	}
 	for (size_t x = LOADEDCHUNKWIDTH-2; x < LOADEDCHUNKWIDTH; x++)
@@ -177,12 +177,13 @@ void World::moveCenterChunkRight()
 
 void World::moveCenterChunkLeft()
 {
+	Chunk* delChunks[LOADEDCHUNKWIDTH];
 	for (size_t x = LOADEDCHUNKWIDTH - 1; x < LOADEDCHUNKWIDTH; x++)
 	{
 		for (size_t z = 0; z < LOADEDCHUNKWIDTH; z++)
 		{
 			// ------------------------------------------------------------------------------------- save to file when added
-			delete loadedChunks[z * LOADEDCHUNKWIDTH + x];
+			delChunks[z] = loadedChunks[z * LOADEDCHUNKWIDTH + x];
 		}
 	}
 	for (size_t x = LOADEDCHUNKWIDTH - 1; x > 0; x--)
@@ -196,8 +197,7 @@ void World::moveCenterChunkLeft()
 	{
 		for (size_t z = 0; z < LOADEDCHUNKWIDTH; z++)
 		{
-			createNewChunk(x,z);
-			loadedChunks[z * LOADEDCHUNKWIDTH + x]->setup();
+			overrideNewChunk(x, z, delChunks[z]);
 		}
 	}
 	for (size_t x = 0; x < 2; x++)
@@ -210,7 +210,7 @@ void World::moveCenterChunkLeft()
 }
 
 
-Block* World::getBlockAt(int x, int y, int z, int chunkNumber)
+Block World::getBlockAt(int x, int y, int z, int chunkNumber)
 {
 	return loadedChunks[chunkNumber]->getBlockAt(x,y,z);
 }
@@ -220,6 +220,14 @@ void World::createNewChunk(int x, int z)
 	std::vector<float> noiseOutput(16 * 16);
 	grassTerrain->GenUniformGrid2D(noiseOutput.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 0.018f, seed);
 	loadedChunks[z * LOADEDCHUNKWIDTH + x] = new Chunk((z + centerChunkPos.z - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, (x + centerChunkPos.x - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, z * LOADEDCHUNKWIDTH + x, noiseOutput);
+}
+
+void World::overrideNewChunk(int x, int z, Chunk* chunk)
+{
+	std::vector<float> noiseOutput(16 * 16);
+	grassTerrain->GenUniformGrid2D(noiseOutput.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 0.018f, seed);
+	chunk->reLoadChunk((z + centerChunkPos.z - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, (x + centerChunkPos.x - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, z * LOADEDCHUNKWIDTH + x, noiseOutput);
+	loadedChunks[z * LOADEDCHUNKWIDTH + x] = chunk;
 }
 
 void World::loadChunks()

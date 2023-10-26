@@ -16,12 +16,14 @@ public:
 	~World();
 	void setup();
 	void update(float dt);
-	Block* getBlockAt(int x, int y, int z, int chunkNumber);
+	Block getBlockAt(int x, int y, int z, int chunkNumber);
+	void updateLoadedChunks();
 
 private:
 	void createNewChunk(int x, int y);
+	void overrideNewChunk(int x, int y, Chunk* chunk);
+
 	void loadChunks();
-	void updateLoadedChunks();
 	void moveCenterChunkLeft();
 	void moveCenterChunkRight();
 	void moveCenterChunkForward();

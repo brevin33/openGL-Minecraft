@@ -11,6 +11,7 @@
 #define SPRITEWIDTH 16
 #define BLOCKVAOCOUNT 24
 #define AMBIENTOCCLUSIONSTRENGTH .33f
+#define CHUNKBUFFERSIZE 12000
 // blocks
 #define AIR -1
 #define DIRT 0
@@ -23,11 +24,12 @@ extern std::vector<Shader> shaders;
 extern Texture blockTexture;
 extern Block dummyTransparentBlock;
 extern Block dummyNonTransparentBlock;
-
+extern bool changeChunkLoaded;
+class Block;
 
 enum ShaderNames
 {
-	block,
+	blockShader,
 };
 
 #endif
