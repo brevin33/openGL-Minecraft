@@ -63,31 +63,19 @@ void Chunk::createMesh() {
 }
 
 void Chunk::bindBuffers() {
-	if (!first) {
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, CHUNKBUFFERSIZE * sizeof(float), &vertices[0]);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, 0.5f * CHUNKBUFFERSIZE * sizeof(unsigned int), &triangles[0]);
-		shouldDraw = true;
-		readyToBindBuffers = false;
-	}
-	else {
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, CHUNKBUFFERSIZE * sizeof(float), &vertices[0], GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0.5f * sizeof(unsigned int) * CHUNKBUFFERSIZE, &triangles[0], GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(5 * sizeof(float)));
-		glEnableVertexAttribArray(2);
-		shouldDraw = true;
-		readyToBindBuffers = false;
-		first = false;
-	}
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * triangles.size(), &triangles[0], GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(5 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	shouldDraw = true;
+	readyToBindBuffers = false;
 }
 
 void Chunk::reLoadChunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues)
@@ -127,7 +115,7 @@ Block Chunk::getBlockAt(uint8_t x, uint8_t y, uint8_t z)
 }
 
 Block Chunk::GenorateBlock(uint8_t x, uint8_t y, uint8_t z, float NoiseValue) {
-	if(y > 93 + NoiseValue * 7)
+	if(y > 93 + NoiseValue * 2)
 		return Block(x, y, z, AIR);
 	return Block(x, y, z, DIRT);
 }

@@ -11,7 +11,7 @@ class Chunk
 {
 public:
 	Chunk();
-	Chunk(int x, int z, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues);
+	Chunk(int z, int x, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues);
 	~Chunk();
 	void createMesh();
 	void update(float dt);

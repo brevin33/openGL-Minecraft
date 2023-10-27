@@ -18,7 +18,7 @@ int HEIGHT = 600 * 4 * .8;
 World world;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 6.0f, 0.0f));
 float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -83,6 +83,7 @@ void update() {
     float currentFrame = static_cast<float>(glfwGetTime());
     dt = currentFrame - lastFrame;
     lastFrame = currentFrame;
+    camera.update(dt);
     processInput(window);
 
     render();

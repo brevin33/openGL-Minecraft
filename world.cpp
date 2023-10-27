@@ -54,15 +54,16 @@ void World::updateChunkIndex() {
 void World::remeshChunks()
 {
 	for (const auto& elem : chunksToRemesh) {
-		std::thread thread_obj(&Chunk::createMesh, loadedChunks[elem]);
-		thread_obj.detach();
+		//std::thread thread_obj(&Chunk::createMesh, loadedChunks[elem]);
+		//thread_obj.detach();
+		loadedChunks[elem]->createMesh();
 	}
 	chunksToRemesh.clear();
 }
 
 void World::updateLoadedChunks() {
 	glm::vec3 oldCenterChunkPos = centerChunkPos;
-	centerChunkPos = glm::round(playerPos / 16.0f);
+	centerChunkPos = glm::floor(playerPos / (float)CHUNKWIDTH);
 	if (oldCenterChunkPos.x < centerChunkPos.x)
 		moveCenterChunkRight();
 	else if (oldCenterChunkPos.x > centerChunkPos.x)
@@ -74,6 +75,15 @@ void World::updateLoadedChunks() {
 	updateChunkIndex();
 	remeshChunks();
 }
+
+Block World::getBlockFromWorldPos(int x, int y, int z)
+{
+	glm::vec3 playerChunkPos = glm::floor(glm::vec3(x,y,z) / (float)CHUNKWIDTH) - centerChunkPos + glm::vec3(LOADEDCHUNKWIDTH/2,0, LOADEDCHUNKWIDTH/2);
+	int blockX = x - CHUNKWIDTH * (floor(x / (float)CHUNKWIDTH));
+	int blockY = y + 101;
+	int blockZ = z - CHUNKWIDTH * (floor(z/(float)CHUNKWIDTH));
+	return getBlockAt(blockX,blockY,blockZ, playerChunkPos.x + playerChunkPos.z * LOADEDCHUNKWIDTH);
+} 
 
 void World::moveCenterChunkForward()
 {

@@ -18,6 +18,7 @@ public:
 	void update(float dt);
 	Block getBlockAt(int x, int y, int z, int chunkNumber);
 	void updateLoadedChunks();
+	Block getBlockFromWorldPos(int x, int y, int z);
 
 private:
 	void createNewChunk(int x, int y);
@@ -30,11 +31,14 @@ private:
 	void moveCenterChunkBack();
 	void updateChunkIndex();
 	void remeshChunks();
+
+private:
 	Chunk* loadedChunks[LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH];
 	int seed;
 	glm::vec3 centerChunkPos;
 	FastNoise::SmartNode<FastNoise::Simplex> grassTerrain;
 	std::unordered_set<int> chunksToRemesh;
+
 };
 
 extern glm::vec3 playerPos;
