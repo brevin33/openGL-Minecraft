@@ -63,6 +63,8 @@ void processInput(GLFWwindow* window)
         camera.ProcessKeyboard(LEFT, dt);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, dt);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.jumping = true;
     playerPos = camera.Position;
 }
 
@@ -198,4 +200,10 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
+inline glm::vec3 MoveTowards(glm::vec3 start, glm::vec3 dest, float max) {
+    glm::vec3 dif = dest - start;
+    dif = glm::clamp(dif, -max, max);
+    return start + dif;
 }

@@ -21,12 +21,13 @@ enum Camera_Movement {
 // Default camera values
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
-const float SPEED = 17.5f;
+const float SPEED = 15.5f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
-const float GRAVITY = -9.8f;
-const float MAXACCEL = 10.0f;
-
+const float GRAVITY = -28.8f;
+const float MAXACCEL = 60.0f;
+const int PLAYERHEIGHT = 2;
+const float jumpHeight = 2.5f;
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera
@@ -47,6 +48,8 @@ public:
     float Zoom;
     glm::vec3 velocity;
     glm::vec3 input;
+    bool grounded;
+    bool jumping;
 
     glm::vec3 getBlockposition(const glm::vec3& pos) {
         glm::vec3 blockPos;
@@ -82,24 +85,33 @@ public:
     void update(float deltaTime) {
         input = input != glm::vec3(0,0,0) ? glm::normalize(input) : glm::vec3(0, 0, 0);
         glm::vec3 desiredVelocity = glm::vec3(MovementSpeed, 0, MovementSpeed) * input;
-        desiredVelocity.y = GRAVITY;
-        velocity = desiredVelocity;
+        desiredVelocity.y = velocity.y;
+        velocity = MoveTowards(velocity,desiredVelocity,MAXACCEL);
+        velocity.y += GRAVITY * deltaTime;
+        if (jumping && grounded) {
+            velocity.y = glm::sqrt(2.0f * -GRAVITY * jumpHeight);
+        }
         glm::vec3 newPosition = Position + ( velocity * deltaTime);
+        glm::vec3 lastPos = Position;
         glm::vec3 blockPos = getBlockposition(Position);
         glm::vec3 newBlockPos = getBlockposition(newPosition);
-        if (blockPos.x == newBlockPos.x || world.getBlockFromWorldPos(newBlockPos.x, blockPos.y - 2, blockPos.z).blockType < 0)// chuck for block at pos
+        if (blockPos.x == newBlockPos.x || world.getBlockFromWorldPos(newBlockPos.x, blockPos.y - PLAYERHEIGHT, blockPos.z).blockType < 0)// chuck for block at pos
         {
             Position.x = newPosition.x;
         }
-        if (blockPos.y == newBlockPos.y || world.getBlockFromWorldPos(blockPos.x, newBlockPos.y - 2, blockPos.z).blockType < 0)// chuck for block at pos
+        if (blockPos.y == newBlockPos.y || world.getBlockFromWorldPos(blockPos.x, newBlockPos.y - PLAYERHEIGHT, blockPos.z).blockType < 0)// chuck for block at pos
         {
+            grounded = false;
             Position.y = newPosition.y;
         }
-        if (blockPos.z == newBlockPos.z || world.getBlockFromWorldPos(blockPos.x, blockPos.y - 2, newBlockPos.z).blockType < 0)// chuck for block at pos
+        else {
+            grounded = true;
+        }
+        if (blockPos.z == newBlockPos.z || world.getBlockFromWorldPos(blockPos.x, blockPos.y - PLAYERHEIGHT, newBlockPos.z).blockType < 0)// chuck for block at pos
         {
             Position.z = newPosition.z;
         }
-
+        jumping = false;
 
         input = glm::vec3(0,0,0);
     }

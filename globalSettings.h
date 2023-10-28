@@ -1,5 +1,8 @@
 #ifndef GLOBALSETTINGS_H
 #define GLOBALSETTINGS_H
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "block.h"
 #include "shader.h"
 #include "texture.h"
@@ -19,6 +22,7 @@
 class World;
 class Chunk;
 class Block;
+inline glm::vec3 MoveTowards(glm::vec3 start, glm::vec3 dest, float max);
 extern World world;
 extern std::vector<Shader> shaders;
 extern Texture blockTexture;

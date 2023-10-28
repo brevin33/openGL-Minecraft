@@ -115,7 +115,7 @@ Block Chunk::getBlockAt(uint8_t x, uint8_t y, uint8_t z)
 }
 
 Block Chunk::GenorateBlock(uint8_t x, uint8_t y, uint8_t z, float NoiseValue) {
-	if(y > 93 + NoiseValue * 2)
+	if(y > 70 + NoiseValue * 28)
 		return Block(x, y, z, AIR);
 	return Block(x, y, z, DIRT);
 }
