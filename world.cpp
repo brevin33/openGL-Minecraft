@@ -83,7 +83,21 @@ Block World::getBlockFromWorldPos(int x, int y, int z)
 	int blockY = y + 101;
 	int blockZ = z - CHUNKWIDTH * (floor(z/(float)CHUNKWIDTH));
 	return getBlockAt(blockX,blockY,blockZ, playerChunkPos.x + playerChunkPos.z * LOADEDCHUNKWIDTH);
-} 
+}
+void World::removeBlockFromWorldPos(int x, int y, int z)
+{
+	glm::vec3 playerChunkPos = glm::floor(glm::vec3(x, y, z) / (float)CHUNKWIDTH) - centerChunkPos + glm::vec3(LOADEDCHUNKWIDTH / 2, 0, LOADEDCHUNKWIDTH / 2);
+	int blockX = x - CHUNKWIDTH * (floor(x / (float)CHUNKWIDTH));
+	int blockY = y + 101;
+	int blockZ = z - CHUNKWIDTH * (floor(z / (float)CHUNKWIDTH));
+	loadedChunks[(int)playerChunkPos.x + (int)playerChunkPos.z * LOADEDCHUNKWIDTH]->breakBlockAt(blockX, blockY, blockZ);
+}
+
+void World::reloadMesh(int chunkNumber)
+{
+	loadedChunks[chunkNumber]->createMesh();
+}
+
 
 void World::moveCenterChunkForward()
 {

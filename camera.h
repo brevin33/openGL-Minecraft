@@ -50,6 +50,7 @@ public:
     glm::vec3 input;
     bool grounded;
     bool jumping;
+    bool clicked = false;
 
     glm::vec3 getBlockposition(const glm::vec3& pos) {
         glm::vec3 blockPos;
@@ -57,6 +58,28 @@ public:
         blockPos.y = ceilf(pos.y);
         blockPos.z = ceilf(pos.z);
         return blockPos;
+    }
+
+    float amountToNextBlock(const glm::vec3& pos, const glm::vec3& dir) {
+        glm::vec3 blockPos = getBlockposition(pos);
+        if (dir.x > 0)
+            blockPos.x = -(blockPos.x - pos.x) - 0.01f;
+        else
+            blockPos.x = -(pos.x - blockPos.x) + 0.01f;
+        if (dir.y > 0)
+            blockPos.y = -(pos.y - blockPos.y) + 0.01f;
+        else
+            blockPos.y = -(blockPos.y - pos.y) - 0.01f;
+        if (dir.z > 0)
+            blockPos.z = -(pos.z - blockPos.z) + 0.01f;
+        else
+            blockPos.z = -(blockPos.z - pos.z) - 0.01f;
+        
+        float distMovedX = blockPos.x / dir.x;
+        float distMovedY = blockPos.y / dir.y;
+        float distMovedZ = blockPos.z / dir.z;
+
+        return glm::min(glm::min(distMovedX, distMovedY),distMovedZ);
     }
 
     // constructor with vectors
@@ -82,7 +105,25 @@ public:
         updateCameraVectors();
     }
 
+    void breakBlock() {
+        glm::vec3 currentPos = Position;
+        for (size_t i = 0; i < 13; i++)
+        {
+            currentPos = 0.33f * Front + currentPos;
+            glm::vec3 currentBlockPos = getBlockposition(currentPos);
+            if (world.getBlockFromWorldPos(currentBlockPos.x, currentBlockPos.y, currentBlockPos.z).blockType >= 0) {
+                world.removeBlockFromWorldPos(currentBlockPos.x, currentBlockPos.y, currentBlockPos.z);
+                break;
+            }
+        }
+
+
+    }
+
     void update(float deltaTime) {
+        if(clicked)
+            breakBlock();
+        clicked = false;
         input = input != glm::vec3(0,0,0) ? glm::normalize(input) : glm::vec3(0, 0, 0);
         glm::vec3 desiredVelocity = glm::vec3(MovementSpeed, 0, MovementSpeed) * input;
         desiredVelocity.y = velocity.y;
@@ -119,7 +160,7 @@ public:
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 GetViewMatrix()
     {
-        return glm::lookAt(Position, Position + Front, Up);
+        return glm::lookAt(glm::vec3(Position.x, Position.y-0.2f, Position.z), Position + Front, Up);
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)

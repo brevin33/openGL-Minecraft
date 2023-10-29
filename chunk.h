@@ -16,6 +16,7 @@ public:
 	void createMesh();
 	void update(float dt);
 	Block getBlockAt(uint8_t x, uint8_t y, uint8_t z);
+	void breakBlockAt(uint8_t x, uint8_t y, uint8_t z);
 	uint8_t chunkIndex;
 	void setup();
 	void updateChunkNumber(uint16_t chunkNum);

@@ -114,6 +114,20 @@ Block Chunk::getBlockAt(uint8_t x, uint8_t y, uint8_t z)
     return blocks[z * CHUNKHEIGHT * CHUNKWIDTH + y * CHUNKWIDTH + x];
 }
 
+void Chunk::breakBlockAt(uint8_t x, uint8_t y, uint8_t z)
+{
+	blocks[z * CHUNKHEIGHT * CHUNKWIDTH + y * CHUNKWIDTH + x].blockType = -1;
+	createMesh();
+	if (x == CHUNKWIDTH - 1)
+		world.reloadMesh(chunkIndex + 1);
+	else if (x == 0)
+		world.reloadMesh(chunkIndex - 1);
+	if (z == CHUNKWIDTH - 1)
+		world.reloadMesh(chunkIndex + LOADEDCHUNKWIDTH);
+	else if (z == 0)
+		world.reloadMesh(chunkIndex - LOADEDCHUNKWIDTH);
+}
+
 Block Chunk::GenorateBlock(uint8_t x, uint8_t y, uint8_t z, float NoiseValue) {
 	if(y > 70 + NoiseValue * 28)
 		return Block(x, y, z, AIR);

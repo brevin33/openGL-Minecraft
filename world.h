@@ -19,6 +19,8 @@ public:
 	Block getBlockAt(int x, int y, int z, int chunkNumber);
 	void updateLoadedChunks();
 	Block getBlockFromWorldPos(int x, int y, int z);
+	void removeBlockFromWorldPos(int x, int y, int z);
+	void reloadMesh(int chunkNumber);
 
 private:
 	void createNewChunk(int x, int y);

@@ -25,7 +25,7 @@ bool firstMouse = true;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 float dt = 0.0f;	
 float lastFrame = 0.0f;
 
@@ -126,11 +126,17 @@ bool setupWindow() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
-
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glEnable(GL_DEPTH_TEST);
     return true;
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+        camera.clicked = true;
 }
 
 void cleanup() {
