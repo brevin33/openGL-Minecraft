@@ -387,17 +387,17 @@ void Block::addGemometry(std::vector<float>& verts, std::vector<unsigned int>& t
 		ChunkBlock frontBlock = getFrontBlock(chunkNumber);
 		ChunkBlock backBlock = getBackBlock(chunkNumber);
 		if (leftBlock.block.blockType < 0)
-			addLeftFace(verts, triangles, x, y, z, 2, 0, leftBlock);
+			addLeftFace(verts, triangles, x, y, z, 14, 28, leftBlock);
 		if (rightBlock.block.blockType < 0)
-			addRightFace(verts, triangles, x, y, z, 2, 0, rightBlock);
+			addRightFace(verts, triangles, x, y, z, 14, 28, rightBlock);
 		if (topBlock.block.blockType < 0)
-			addTopFace(verts, triangles, x, y, z, 2, 0, topBlock);
+			addTopFace(verts, triangles, x, y, z, 14, 28, topBlock);
 		if (bottomBlock.block.blockType < 0)
-			addBottomFace(verts, triangles, x, y, z, 2, 0, bottomBlock);
+			addBottomFace(verts, triangles, x, y, z, 14, 28, bottomBlock);
 		if (frontBlock.block.blockType < 0)
-			addFrontFace(verts, triangles, x, y, z, 2, 0, frontBlock);
+			addFrontFace(verts, triangles, x, y, z, 14, 28, frontBlock);
 		if (backBlock.block.blockType < 0)
-			addBackFace(verts, triangles, x, y, z, 2, 0, backBlock);
+			addBackFace(verts, triangles, x, y, z, 14, 28, backBlock);
 		return;
 	}
 	default:
