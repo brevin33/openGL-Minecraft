@@ -33,23 +33,32 @@ glm::vec3 playerPos;
 
 Texture blockTexture;
     
-
-float TRIANGLEVERTS[] = {
-     0.5f,  0.5f, 0.0f,  // top right
-     0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f   // top left 
-};
-unsigned int indices[] = {  // note that we start from 0!
-    0, 1, 3,   // first triangle
-    1, 2, 3    // second triangle
-};
-unsigned int TriangleVBO;
-unsigned int TriangleVAO;
-unsigned int QuadEBO;
+unsigned int crosshairVBO;
+unsigned int crosshairVAO;
+unsigned int crosshairEBO;
 std::vector<Shader> shaders;
-
 GLFWwindow* window;
+
+
+const float crosshairLineWidth = .002f;
+const float crosshairLineLength = .018f;
+float crosshairVerts[] = {
+    -crosshairLineLength, crosshairLineWidth, 0.0f,
+    -crosshairLineLength, -crosshairLineWidth,0.0f,
+    crosshairLineLength, crosshairLineWidth,0.0f,
+    crosshairLineLength, -crosshairLineWidth,0.0f,
+    crosshairLineWidth, crosshairLineLength,0.0f,
+    -crosshairLineWidth, crosshairLineLength,0.0f,
+     crosshairLineWidth, -crosshairLineLength,0.0f,
+    -crosshairLineWidth, -crosshairLineLength,0.0f,
+};
+unsigned int crosshairIndices[] = {
+    0, 3, 1,
+    0, 2, 3,
+    4, 7, 5,
+    4, 6, 7,
+};
+
 
 void processInput(GLFWwindow* window)
 {
@@ -79,6 +88,12 @@ void render() {
         shaders[i].setMat4("view", view);
     }
     world.update(dt);
+
+    // crosshair
+    shaders[1].use();
+    glBindVertexArray(crosshairVAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, crosshairEBO);
+    glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 }
 
 void update() {
@@ -136,13 +151,15 @@ bool setupWindow() {
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-        camera.clicked = true;
+        camera.leftClicked = true;
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+        camera.rightClicked = true;
 }
 
 void cleanup() {
-    glDeleteVertexArrays(1, &TriangleVAO);
-    glDeleteBuffers(1, &TriangleVBO);
-    glDeleteBuffers(1, &QuadEBO);
+    glDeleteVertexArrays(1, &crosshairVAO);
+    glDeleteBuffers(1, &crosshairVBO);
+    glDeleteBuffers(1, &crosshairEBO);
     for (int i = 0; i < shaders.size(); i++)
     {
         shaders[i].remove();
@@ -151,12 +168,25 @@ void cleanup() {
 } 
 
 void loadVisuals() {
+    glGenBuffers(1, &crosshairVBO);
+    glGenBuffers(1, &crosshairEBO);
+    glGenVertexArrays(1, &crosshairVAO);
+    glBindVertexArray(crosshairVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, crosshairVBO);
+    glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), &crosshairVerts[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, crosshairEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 12, &crosshairIndices[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 
     // Shader
     shaders.push_back(Shader("block.vert", "block.frag"));
     shaders[blockShader].use();
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
     shaders[blockShader].setMat4("projection", projection);
+    shaders.push_back(Shader("screenSpace.vert", "solidColor.frag"));
+    shaders[1].use();
+
 
     blockTexture.Load("terrain.png");
 

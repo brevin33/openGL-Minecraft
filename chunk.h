@@ -22,6 +22,7 @@ public:
 	void updateChunkNumber(uint16_t chunkNum);
 	void bindBuffers();
 	void reLoadChunk(int x, int z, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues);
+	void placeBlockAt(int x, int y, int z, int block);
 private:
 	Block GenorateBlock(uint8_t x, uint8_t y, uint8_t z, float NoiseValue);
 

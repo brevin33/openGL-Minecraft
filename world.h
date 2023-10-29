@@ -21,6 +21,7 @@ public:
 	Block getBlockFromWorldPos(int x, int y, int z);
 	void removeBlockFromWorldPos(int x, int y, int z);
 	void reloadMesh(int chunkNumber);
+	void placeBlockFromWorldPos(int x, int y, int z, int block);
 
 private:
 	void createNewChunk(int x, int y);
@@ -33,6 +34,8 @@ private:
 	void moveCenterChunkBack();
 	void updateChunkIndex();
 	void remeshChunks();
+
+
 
 private:
 	Chunk* loadedChunks[LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH];

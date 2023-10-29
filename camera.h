@@ -50,7 +50,9 @@ public:
     glm::vec3 input;
     bool grounded;
     bool jumping;
-    bool clicked = false;
+    bool rightClicked = false;
+    int activeBlock = DIRT;
+    bool leftClicked = false;
 
     glm::vec3 getBlockposition(const glm::vec3& pos) {
         glm::vec3 blockPos;
@@ -60,27 +62,6 @@ public:
         return blockPos;
     }
 
-    float amountToNextBlock(const glm::vec3& pos, const glm::vec3& dir) {
-        glm::vec3 blockPos = getBlockposition(pos);
-        if (dir.x > 0)
-            blockPos.x = -(blockPos.x - pos.x) - 0.01f;
-        else
-            blockPos.x = -(pos.x - blockPos.x) + 0.01f;
-        if (dir.y > 0)
-            blockPos.y = -(pos.y - blockPos.y) + 0.01f;
-        else
-            blockPos.y = -(blockPos.y - pos.y) - 0.01f;
-        if (dir.z > 0)
-            blockPos.z = -(pos.z - blockPos.z) + 0.01f;
-        else
-            blockPos.z = -(blockPos.z - pos.z) - 0.01f;
-        
-        float distMovedX = blockPos.x / dir.x;
-        float distMovedY = blockPos.y / dir.y;
-        float distMovedZ = blockPos.z / dir.z;
-
-        return glm::min(glm::min(distMovedX, distMovedY),distMovedZ);
-    }
 
     // constructor with vectors
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
@@ -107,23 +88,44 @@ public:
 
     void breakBlock() {
         glm::vec3 currentPos = Position;
-        for (size_t i = 0; i < 13; i++)
+        glm::vec3 realFront = Front;
+        realFront.y += 0.1f;
+        for (size_t i = 0; i < 72; i++)
         {
-            currentPos = 0.33f * Front + currentPos;
+            currentPos = 0.05f * realFront + currentPos;
             glm::vec3 currentBlockPos = getBlockposition(currentPos);
             if (world.getBlockFromWorldPos(currentBlockPos.x, currentBlockPos.y, currentBlockPos.z).blockType >= 0) {
                 world.removeBlockFromWorldPos(currentBlockPos.x, currentBlockPos.y, currentBlockPos.z);
                 break;
             }
         }
+    }
 
-
+    void placeBlock() {
+        glm::vec3 currentPos = Position;
+        glm::vec3 lastBlockPos = glm::vec3(-9999,-9999,-9999);
+        glm::vec3 realFront = Front;
+        realFront.y += 0.1f;
+        for (size_t i = 0; i < 72; i++)
+        {
+            currentPos = 0.05f * realFront + currentPos;
+            glm::vec3 currentBlockPos = getBlockposition(currentPos);
+            if (world.getBlockFromWorldPos(currentBlockPos.x, currentBlockPos.y, currentBlockPos.z).blockType >= 0) {
+                if (lastBlockPos != glm::vec3(-9999, -9999, -9999))
+                    world.placeBlockFromWorldPos(lastBlockPos.x, lastBlockPos.y, lastBlockPos.z,activeBlock);
+                break;
+            }
+            lastBlockPos = currentBlockPos;
+        }
     }
 
     void update(float deltaTime) {
-        if(clicked)
+        if(leftClicked)
             breakBlock();
-        clicked = false;
+        if (rightClicked)
+            placeBlock();
+        leftClicked = false;
+        rightClicked = false;
         input = input != glm::vec3(0,0,0) ? glm::normalize(input) : glm::vec3(0, 0, 0);
         glm::vec3 desiredVelocity = glm::vec3(MovementSpeed, 0, MovementSpeed) * input;
         desiredVelocity.y = velocity.y;

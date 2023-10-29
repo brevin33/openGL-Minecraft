@@ -99,6 +99,20 @@ void Chunk::reLoadChunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<
 	}
 }
 
+void Chunk::placeBlockAt(int x, int y, int z, int block)
+{
+	blocks[z * CHUNKHEIGHT * CHUNKWIDTH + y * CHUNKWIDTH + x].blockType = block;
+	createMesh();
+	if (x == CHUNKWIDTH - 1)
+		world.reloadMesh(chunkIndex + 1);
+	else if (x == 0)
+		world.reloadMesh(chunkIndex - 1);
+	if (z == CHUNKWIDTH - 1)
+		world.reloadMesh(chunkIndex + LOADEDCHUNKWIDTH);
+	else if (z == 0)
+		world.reloadMesh(chunkIndex - LOADEDCHUNKWIDTH);
+}
+
 void Chunk::update(float dt)
 {
 	if (readyToBindBuffers) bindBuffers();

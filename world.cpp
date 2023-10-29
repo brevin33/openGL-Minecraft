@@ -71,7 +71,7 @@ void World::updateLoadedChunks() {
 	if (oldCenterChunkPos.z < centerChunkPos.z)
 		moveCenterChunkForward();
 	else if (oldCenterChunkPos.z > centerChunkPos.z)
-		moveCenterChunkBack();
+ 		moveCenterChunkBack();
 	updateChunkIndex();
 	remeshChunks();
 }
@@ -96,6 +96,15 @@ void World::removeBlockFromWorldPos(int x, int y, int z)
 void World::reloadMesh(int chunkNumber)
 {
 	loadedChunks[chunkNumber]->createMesh();
+}
+
+void World::placeBlockFromWorldPos(int x, int y, int z, int block)
+{
+	glm::vec3 playerChunkPos = glm::floor(glm::vec3(x, y, z) / (float)CHUNKWIDTH) - centerChunkPos + glm::vec3(LOADEDCHUNKWIDTH / 2, 0, LOADEDCHUNKWIDTH / 2);
+	int blockX = x - CHUNKWIDTH * (floor(x / (float)CHUNKWIDTH));
+	int blockY = y + 101;
+	int blockZ = z - CHUNKWIDTH * (floor(z / (float)CHUNKWIDTH));
+	loadedChunks[(int)playerChunkPos.x + (int)playerChunkPos.z * LOADEDCHUNKWIDTH]->placeBlockAt(blockX, blockY, blockZ,block);
 }
 
 
