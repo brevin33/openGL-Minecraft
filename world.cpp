@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <thread>
+#include <mutex>
+std::mutex chunksToRemeshLock;
 World::World()
 {
 	grassTerrain = FastNoise::New<FastNoise::Simplex>();
@@ -39,6 +41,11 @@ void World::setup() {
 		loadedChunks[i]->setup();
 		loadedChunks[i]->createMesh();
 	}
+	for (int i = 0; i < 6; i++)
+	{
+		std::thread thread_obj(&World::remeshChunks, this);
+		thread_obj.detach();
+	}
 }
 
 void World::updateChunkIndex() {
@@ -53,12 +60,18 @@ void World::updateChunkIndex() {
 
 void World::remeshChunks()
 {
-	for (const auto& elem : chunksToRemesh) {
-		//std::thread thread_obj(&Chunk::createMesh, loadedChunks[elem]);
-		//thread_obj.detach();
+	while (true) {
+		if (chunksToRemesh.size() == 0) continue;
+		chunksToRemeshLock.lock();
+		if (chunksToRemesh.size() == 0) {
+			chunksToRemeshLock.unlock();
+			continue;
+		}
+		auto elem = *chunksToRemesh.begin();
+		chunksToRemesh.erase(chunksToRemesh.begin());
+		chunksToRemeshLock.unlock();
 		loadedChunks[elem]->createMesh();
 	}
-	chunksToRemesh.clear();
 }
 
 void World::updateLoadedChunks() {
@@ -73,7 +86,7 @@ void World::updateLoadedChunks() {
 	else if (oldCenterChunkPos.z > centerChunkPos.z)
  		moveCenterChunkBack();
 	updateChunkIndex();
-	remeshChunks();
+	//remeshChunks();
 }
 
 Block World::getBlockFromWorldPos(int x, int y, int z)
@@ -110,6 +123,7 @@ void World::placeBlockFromWorldPos(int x, int y, int z, int block)
 
 void World::moveCenterChunkForward()
 {
+	loadedChunksLock = true;
 	Chunk* delChunks[LOADEDCHUNKWIDTH];
 	for (size_t z = 0; z < 1; z++)
 	{
@@ -139,10 +153,12 @@ void World::moveCenterChunkForward()
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
 		}
 	}
+	loadedChunksLock = false;
 }
 
 void World::moveCenterChunkBack()
 {
+	loadedChunksLock = true;
 	Chunk* delChunks[LOADEDCHUNKWIDTH];
 	for (size_t z = LOADEDCHUNKWIDTH - 1; z < LOADEDCHUNKWIDTH; z++)
 	{
@@ -173,10 +189,12 @@ void World::moveCenterChunkBack()
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
 		}
 	}
+	loadedChunksLock = false;
 }
 			
 void World::moveCenterChunkRight()
 {
+	loadedChunksLock = true;
 	Chunk* delChunks[LOADEDCHUNKWIDTH];
 	for (size_t x = 0; x < 1; x++)
 	{
@@ -206,10 +224,12 @@ void World::moveCenterChunkRight()
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
 		}
 	}
+	loadedChunksLock = false;
 }
 
 void World::moveCenterChunkLeft()
 {
+	loadedChunksLock = true;
 	Chunk* delChunks[LOADEDCHUNKWIDTH];
 	for (size_t x = LOADEDCHUNKWIDTH - 1; x < LOADEDCHUNKWIDTH; x++)
 	{
@@ -240,26 +260,36 @@ void World::moveCenterChunkLeft()
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
 		}
 	}
+	loadedChunksLock = false;
 }
 
 
 Block World::getBlockAt(int x, int y, int z, int chunkNumber)
 {
+	while(loadedChunksLock){}
 	return loadedChunks[chunkNumber]->getBlockAt(x,y,z);
 }
 
 void World::createNewChunk(int x, int z)
 {
 	std::vector<float> noiseOutput(16 * 16);
-	grassTerrain->GenUniformGrid2D(noiseOutput.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 0.018f, seed);
-	loadedChunks[z * LOADEDCHUNKWIDTH + x] = new Chunk((z + centerChunkPos.z - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, (x + centerChunkPos.x - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, z * LOADEDCHUNKWIDTH + x, noiseOutput);
+	grassTerrain->GenUniformGrid2D(noiseOutput.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 0.003f, seed);
+	std::vector<float> noiseOutput2(16 * 16);
+	grassTerrain->GenUniformGrid2D(noiseOutput2.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 0.012f, seed);
+	std::vector<float> treeNoiseOutput(16 * 16);
+	grassTerrain->GenUniformGrid2D(treeNoiseOutput.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 2.0f, seed);
+	loadedChunks[z * LOADEDCHUNKWIDTH + x] = new Chunk((z + centerChunkPos.z - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, (x + centerChunkPos.x - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, z * LOADEDCHUNKWIDTH + x, noiseOutput, noiseOutput2, treeNoiseOutput);
 }
 
 void World::overrideNewChunk(int x, int z, Chunk* chunk)
 {
 	std::vector<float> noiseOutput(16 * 16);
-	grassTerrain->GenUniformGrid2D(noiseOutput.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 0.018f, seed);
-	chunk->reLoadChunk((z + centerChunkPos.z - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, (x + centerChunkPos.x - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, z * LOADEDCHUNKWIDTH + x, noiseOutput);
+	grassTerrain->GenUniformGrid2D(noiseOutput.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 0.003f, seed);
+	std::vector<float> noiseOutput2(16 * 16);
+	grassTerrain->GenUniformGrid2D(noiseOutput2.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 0.012f, seed);
+	std::vector<float> treeNoiseOutput(16 * 16);
+	grassTerrain->GenUniformGrid2D(treeNoiseOutput.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 4.0f, seed);
+	chunk->reLoadChunk((z + centerChunkPos.z - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, (x + centerChunkPos.x - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, z * LOADEDCHUNKWIDTH + x, noiseOutput, noiseOutput2, treeNoiseOutput);
 	loadedChunks[z * LOADEDCHUNKWIDTH + x] = chunk;
 }
 

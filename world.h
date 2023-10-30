@@ -38,6 +38,7 @@ private:
 
 
 private:
+	bool loadedChunksLock = false;
 	Chunk* loadedChunks[LOADEDCHUNKWIDTH * LOADEDCHUNKWIDTH];
 	int seed;
 	glm::vec3 centerChunkPos;

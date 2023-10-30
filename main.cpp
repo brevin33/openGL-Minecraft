@@ -74,6 +74,18 @@ void processInput(GLFWwindow* window)
         camera.ProcessKeyboard(RIGHT, dt);
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         camera.jumping = true;
+    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
+        camera.activeBlock = DIRT;
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+        camera.activeBlock = GRASS;
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+        camera.activeBlock = STONE;
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+        camera.activeBlock = LOG;
+    if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+        camera.activeBlock = PLANK;
+    if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
+        camera.activeBlock = SAND;
     playerPos = camera.Position;
 }
 

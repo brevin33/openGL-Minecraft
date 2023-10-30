@@ -11,7 +11,7 @@ class Chunk
 {
 public:
 	Chunk();
-	Chunk(int z, int x, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues);
+	Chunk(int z, int x, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues, std::vector<float> const& TerrainNoiseValues2, std::vector<float> const& TreeNoiseValues);
 	~Chunk();
 	void createMesh();
 	void update(float dt);
@@ -21,18 +21,21 @@ public:
 	void setup();
 	void updateChunkNumber(uint16_t chunkNum);
 	void bindBuffers();
-	void reLoadChunk(int x, int z, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues);
+	void reLoadChunk(int x, int z, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues, std::vector<float> const& TerrainNoiseValues2, std::vector<float> const& TreeNoiseValues);
 	void placeBlockAt(int x, int y, int z, int block);
 private:
-	Block GenorateBlock(uint8_t x, uint8_t y, uint8_t z, float NoiseValue);
+	Block GenorateBlock(uint8_t x, uint8_t y, uint8_t z, float NoiseValue, float noiseValue2, float TreeNoiseValue);
+	void createTrees();
 
 public:
 	bool shouldDraw = false;
 	bool readyToBindBuffers = false;
+	bool locked = false;
 private:
 	unsigned int VBO;
 	unsigned int VAO;
 	unsigned int EBO;
+	std::vector<glm::vec3> treePoses;
 	glm::mat4 model;
 	int wx, wz;
 	std::vector<float> vertices;

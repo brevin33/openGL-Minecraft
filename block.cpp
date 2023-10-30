@@ -114,9 +114,9 @@ inline void addLeftFace(std::vector<float>& verts, std::vector<unsigned int>& tr
 
 	float faceVerts[] = {
 		x, y, z, uvx, uvy, occlusionValues[0] * AMBIENTOCCLUSIONSTRENGTH,
-		x, y, z - 1, uvx, uvy2, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y, z - 1, uvx2, uvy, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
 		x, y - 1, z - 1, uvx2, uvy2, occlusionValues[2] * AMBIENTOCCLUSIONSTRENGTH,
-		x, y - 1, z, uvx2, uvy,occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y - 1, z, uvx, uvy2,occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
 	};
 	int faceTriangles[] = {
 		size, size + 3, size + 2,
@@ -143,9 +143,9 @@ inline void addRightFace(std::vector<float>& verts, std::vector<unsigned int>& t
 	float* occlusionValues = ambientOcclusionLeftAndRightFace(block);
 	float faceVerts[] = {
 		x + 1, y, z, uvx, uvy, occlusionValues[0] * AMBIENTOCCLUSIONSTRENGTH,
-		x + 1, y, z - 1, uvx, uvy2, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y, z - 1, uvx2, uvy, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
 		x + 1, y - 1, z - 1, uvx2, uvy2, occlusionValues[2] * AMBIENTOCCLUSIONSTRENGTH,
-		x + 1, y - 1, z, uvx2, uvy, occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y - 1, z, uvx, uvy2, occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
 	};
 	int faceTriangles[] = {
 		size, size + 2, size + 3,
@@ -193,9 +193,9 @@ inline void addFrontFace(std::vector<float>& verts, std::vector<unsigned int>& t
 	float t4 = occlusionValues[3];
 	float faceVerts[] = {
 		x, y, z - 1, uvx, uvy, occlusionValues[0] * AMBIENTOCCLUSIONSTRENGTH,
-		x + 1, y, z - 1, uvx, uvy2,occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y, z - 1, uvx2, uvy,occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
 		x + 1, y - 1, z - 1, uvx2, uvy2, occlusionValues[2] * AMBIENTOCCLUSIONSTRENGTH,
-		x, y - 1, z - 1, uvx2, uvy,occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y - 1, z - 1, uvx, uvy2,occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
 	};
 	int faceTriangles[] = {
 		size, size + 2, size + 1,
@@ -221,9 +221,9 @@ inline void addBackFace(std::vector<float>& verts, std::vector<unsigned int>& tr
 	float* occlusionValues = ambientOcclusionFrontAndBackFace(block);
 	float faceVerts[] = {
 		x, y, z, uvx, uvy, occlusionValues[0] * AMBIENTOCCLUSIONSTRENGTH,
-		x + 1, y, z, uvx, uvy2, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
+		x + 1, y, z, uvx2, uvy, occlusionValues[1] * AMBIENTOCCLUSIONSTRENGTH,
 		x + 1, y - 1, z, uvx2, uvy2, occlusionValues[2] * AMBIENTOCCLUSIONSTRENGTH,
-		x, y - 1, z, uvx2, uvy, occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
+		x, y - 1, z, uvx, uvy2, occlusionValues[3] * AMBIENTOCCLUSIONSTRENGTH,
 	};
 	int faceTriangles[] = {
 		size, size + 1, size + 2,
@@ -398,6 +398,144 @@ void Block::addGemometry(std::vector<float>& verts, std::vector<unsigned int>& t
 			addFrontFace(verts, triangles, x, y, z, 14, 28, frontBlock);
 		if (backBlock.block.blockType < 0)
 			addBackFace(verts, triangles, x, y, z, 14, 28, backBlock);
+		return;
+	}
+	case GRASS: {
+		ChunkBlock leftBlock = getLeftBlock(chunkNumber);
+		ChunkBlock rightBlock = getRightBlock(chunkNumber);
+		ChunkBlock topBlock = getTopBlock(chunkNumber);
+		ChunkBlock bottomBlock = getBottomBlock(chunkNumber);
+		ChunkBlock frontBlock = getFrontBlock(chunkNumber);
+		ChunkBlock backBlock = getBackBlock(chunkNumber);
+		if (leftBlock.block.blockType < 0)
+			addLeftFace(verts, triangles, x, y, z, 28, 31, leftBlock);
+		if (rightBlock.block.blockType < 0)
+			addRightFace(verts, triangles, x, y, z, 28, 31, rightBlock);
+		if (topBlock.block.blockType < 0)
+			addTopFace(verts, triangles, x, y, z, 31, 31, topBlock);
+		if (bottomBlock.block.blockType < 0)
+			addBottomFace(verts, triangles, x, y, z, 14, 28, bottomBlock);
+		if (frontBlock.block.blockType < 0)
+			addFrontFace(verts, triangles, x, y, z, 28, 31, frontBlock);
+		if (backBlock.block.blockType < 0)
+			addBackFace(verts, triangles, x, y, z, 28, 31, backBlock);
+		return;
+	}
+	case STONE: {
+		ChunkBlock leftBlock = getLeftBlock(chunkNumber);
+		ChunkBlock rightBlock = getRightBlock(chunkNumber);
+		ChunkBlock topBlock = getTopBlock(chunkNumber);
+		ChunkBlock bottomBlock = getBottomBlock(chunkNumber);
+		ChunkBlock frontBlock = getFrontBlock(chunkNumber);
+		ChunkBlock backBlock = getBackBlock(chunkNumber);
+		if (leftBlock.block.blockType < 0)
+			addLeftFace(verts, triangles, x, y, z, 37, 3, leftBlock);
+		if (rightBlock.block.blockType < 0)
+			addRightFace(verts, triangles, x, y, z, 37, 3, rightBlock);
+		if (topBlock.block.blockType < 0)
+			addTopFace(verts, triangles, x, y, z, 37, 3, topBlock);
+		if (bottomBlock.block.blockType < 0)
+			addBottomFace(verts, triangles, x, y, z, 37, 3, bottomBlock);
+		if (frontBlock.block.blockType < 0)
+			addFrontFace(verts, triangles, x, y, z, 37, 3, frontBlock);
+		if (backBlock.block.blockType < 0)
+			addBackFace(verts, triangles, x, y, z, 37, 3, backBlock);
+		return;
+	}
+	case WATER: {
+		ChunkBlock leftBlock = getLeftBlock(chunkNumber);
+		ChunkBlock rightBlock = getRightBlock(chunkNumber);
+		ChunkBlock topBlock = getTopBlock(chunkNumber);
+		ChunkBlock bottomBlock = getBottomBlock(chunkNumber);
+		ChunkBlock frontBlock = getFrontBlock(chunkNumber);
+		ChunkBlock backBlock = getBackBlock(chunkNumber);
+		if (topBlock.block.blockType < 0)
+			addTopFace(verts, triangles, x, y, z, 2, 2, topBlock);
+
+		return;
+	}
+	case LEAF: {
+		ChunkBlock leftBlock = getLeftBlock(chunkNumber);
+		ChunkBlock rightBlock = getRightBlock(chunkNumber);
+		ChunkBlock topBlock = getTopBlock(chunkNumber);
+		ChunkBlock bottomBlock = getBottomBlock(chunkNumber);
+		ChunkBlock frontBlock = getFrontBlock(chunkNumber);
+		ChunkBlock backBlock = getBackBlock(chunkNumber);
+		if (leftBlock.block.blockType < 0)
+			addLeftFace(verts, triangles, x, y, z, 33, 6, leftBlock);
+		if (rightBlock.block.blockType < 0)
+			addRightFace(verts, triangles, x, y, z, 33, 6, rightBlock);
+		if (topBlock.block.blockType < 0)
+			addTopFace(verts, triangles, x, y, z, 33, 6, topBlock);
+		if (bottomBlock.block.blockType < 0)
+			addBottomFace(verts, triangles, x, y, z, 33, 6, bottomBlock);
+		if (frontBlock.block.blockType < 0)
+			addFrontFace(verts, triangles, x, y, z, 33, 6, frontBlock);
+		if (backBlock.block.blockType < 0)
+			addBackFace(verts, triangles, x, y, z, 33, 6, backBlock);
+		return;
+	}
+	case SAND: {
+		ChunkBlock leftBlock = getLeftBlock(chunkNumber);
+		ChunkBlock rightBlock = getRightBlock(chunkNumber);
+		ChunkBlock topBlock = getTopBlock(chunkNumber);
+		ChunkBlock bottomBlock = getBottomBlock(chunkNumber);
+		ChunkBlock frontBlock = getFrontBlock(chunkNumber);
+		ChunkBlock backBlock = getBackBlock(chunkNumber);
+		if (leftBlock.block.blockType < 0)
+			addLeftFace(verts, triangles, x, y, z, 36, 17, leftBlock);
+		if (rightBlock.block.blockType < 0)
+			addRightFace(verts, triangles, x, y, z, 36, 17, rightBlock);
+		if (topBlock.block.blockType < 0)
+			addTopFace(verts, triangles, x, y, z, 36, 17, topBlock);
+		if (bottomBlock.block.blockType < 0)
+			addBottomFace(verts, triangles, x, y, z, 36, 17, bottomBlock);
+		if (frontBlock.block.blockType < 0)
+			addFrontFace(verts, triangles, x, y, z, 36, 17, frontBlock);
+		if (backBlock.block.blockType < 0)
+			addBackFace(verts, triangles, x, y, z, 36, 17, backBlock);
+		return;
+	}
+	case LOG: {
+		ChunkBlock leftBlock = getLeftBlock(chunkNumber);
+		ChunkBlock rightBlock = getRightBlock(chunkNumber);
+		ChunkBlock topBlock = getTopBlock(chunkNumber);
+		ChunkBlock bottomBlock = getBottomBlock(chunkNumber);
+		ChunkBlock frontBlock = getFrontBlock(chunkNumber);
+		ChunkBlock backBlock = getBackBlock(chunkNumber);
+		if (leftBlock.block.blockType < 0)
+			addLeftFace(verts, triangles, x, y, z, 33, 19, leftBlock);
+		if (rightBlock.block.blockType < 0)
+			addRightFace(verts, triangles, x, y, z, 33, 19, rightBlock);
+		if (topBlock.block.blockType < 0)
+			addTopFace(verts, triangles, x, y, z, 33, 20, topBlock);
+		if (bottomBlock.block.blockType < 0)
+			addBottomFace(verts, triangles, x, y, z, 33, 20, bottomBlock);
+		if (frontBlock.block.blockType < 0)
+			addFrontFace(verts, triangles, x, y, z, 33, 19, frontBlock);
+		if (backBlock.block.blockType < 0)
+			addBackFace(verts, triangles, x, y, z, 33, 19, backBlock);
+		return;
+	}
+	case PLANK: {
+		ChunkBlock leftBlock = getLeftBlock(chunkNumber);
+		ChunkBlock rightBlock = getRightBlock(chunkNumber);
+		ChunkBlock topBlock = getTopBlock(chunkNumber);
+		ChunkBlock bottomBlock = getBottomBlock(chunkNumber);
+		ChunkBlock frontBlock = getFrontBlock(chunkNumber);
+		ChunkBlock backBlock = getBackBlock(chunkNumber);
+		if (leftBlock.block.blockType < 0)
+			addLeftFace(verts, triangles, x, y, z, 34, 24, leftBlock);
+		if (rightBlock.block.blockType < 0)
+			addRightFace(verts, triangles, x, y, z, 34, 24, rightBlock);
+		if (topBlock.block.blockType < 0)
+			addTopFace(verts, triangles, x, y, z, 34, 24, topBlock);
+		if (bottomBlock.block.blockType < 0)
+			addBottomFace(verts, triangles, x, y, z, 34, 24, bottomBlock);
+		if (frontBlock.block.blockType < 0)
+			addFrontFace(verts, triangles, x, y, z, 34, 24, frontBlock);
+		if (backBlock.block.blockType < 0)
+			addBackFace(verts, triangles, x, y, z, 34, 24, backBlock);
 		return;
 	}
 	default:

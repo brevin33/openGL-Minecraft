@@ -14,7 +14,7 @@ Chunk::Chunk(){
 
 }
 
-Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues)
+Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues, std::vector<float> const& TerrainNoiseValues2, std::vector<float> const& TreeNoiseValues)
 {
     this->wx = worldX;
     this->wz = worldZ;
@@ -28,10 +28,11 @@ Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> cons
 			for (int z = 0; z < CHUNKWIDTH; z++)
 			{
                 int blockI = z * CHUNKHEIGHT * CHUNKWIDTH + y * CHUNKWIDTH + x;
-				blocks[blockI] = GenorateBlock(x, y, z, (TerrainNoiseValues[z*CHUNKWIDTH+x] + 1) * 0.5f);
+				blocks[blockI] = GenorateBlock(x, y, z, (TerrainNoiseValues[z*CHUNKWIDTH+x] + 1) * 0.5f, (TerrainNoiseValues2[z * CHUNKWIDTH + x] + 1) * 0.5f, (TreeNoiseValues[z * CHUNKWIDTH + x] + 1) * 0.5f);
 			}
 		}
 	}
+	createTrees();
 }
 
 void Chunk::setup() {
@@ -53,6 +54,8 @@ Chunk::~Chunk()
 }
 
 void Chunk::createMesh() {
+	while(locked){}
+	locked = true;
 	vertices.clear();
 	triangles.clear();
 	for (int i = 0; i < CHUNKWIDTH * CHUNKWIDTH * CHUNKHEIGHT; i++)
@@ -76,9 +79,10 @@ void Chunk::bindBuffers() {
 	glEnableVertexAttribArray(2);
 	shouldDraw = true;
 	readyToBindBuffers = false;
+	locked = false;
 }
 
-void Chunk::reLoadChunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues)
+void Chunk::reLoadChunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues, std::vector<float> const& TerrainNoiseValues2, std::vector<float> const& TreeNoiseValues)
 {
 	this->shouldDraw = false;
 	this->wx = worldX;
@@ -93,10 +97,50 @@ void Chunk::reLoadChunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<
 			for (int z = 0; z < CHUNKWIDTH; z++)
 			{
 				int blockI = z * CHUNKHEIGHT * CHUNKWIDTH + y * CHUNKWIDTH + x;
-				blocks[blockI] = GenorateBlock(x, y, z, (TerrainNoiseValues[z * CHUNKWIDTH + x] + 1) * 0.5f);
+				blocks[blockI] = GenorateBlock(x, y, z, (TerrainNoiseValues[z * CHUNKWIDTH + x] + 1) * 0.5f, (TerrainNoiseValues2[z * CHUNKWIDTH + x] + 1) * 0.5f, (TreeNoiseValues[z * CHUNKWIDTH + x] + 1) * 0.5f);
 			}
 		}
 	}
+	createTrees();
+}
+
+void Chunk::createTrees() {
+	for (size_t i = 0; i < treePoses.size(); i++)
+	{
+		glm::vec3 treePos = treePoses[i];
+		for (int x = -2;  x <= 2;  x++)
+		{
+			for (int z = -2;  z <= 2;  z++)
+			{
+				int y = 6;
+				blocks[((int)treePos.z + z) * CHUNKHEIGHT * CHUNKWIDTH + ((int)treePos.y + y) * CHUNKWIDTH + (int)treePos.x + x] = Block(treePos.x + x, treePos.y + y, treePos.z + z, LEAF);
+			}
+		}
+		for (int x = -3; x <= 3; x++)
+		{
+			for (int z = -3; z <= 3; z++)
+			{
+				for (int y = 4; y <= 5; y++)
+				{
+					blocks[((int)treePos.z + z) * CHUNKHEIGHT * CHUNKWIDTH + ((int)treePos.y + y) * CHUNKWIDTH + (int)treePos.x + x] = Block(treePos.x + x, treePos.y + y, treePos.z + z, LEAF);
+				}
+			}
+		}
+		for (int x = -2; x <= 2; x++)
+		{
+			for (int z = -2; z <= 2; z++)
+			{
+				int y = 3;
+				blocks[((int)treePos.z + z) * CHUNKHEIGHT * CHUNKWIDTH + ((int)treePos.y + y) * CHUNKWIDTH + (int)treePos.x + x] = Block(treePos.x + x, treePos.y + y, treePos.z + z, LEAF);
+			}
+		}
+		blocks[((int)treePos.z + 0) * CHUNKHEIGHT * CHUNKWIDTH + ((int)treePos.y + 0) * CHUNKWIDTH + (int)treePos.x + 0] = Block(treePos.x, treePos.y, treePos.z, LOG);
+		blocks[((int)treePos.z + 0) * CHUNKHEIGHT * CHUNKWIDTH + ((int)treePos.y + 1) * CHUNKWIDTH + (int)treePos.x + 0] = Block(treePos.x + 0, treePos.y + 1, treePos.z + 0, LOG);
+		blocks[((int)treePos.z + 0) * CHUNKHEIGHT * CHUNKWIDTH + ((int)treePos.y + 2) * CHUNKWIDTH + (int)treePos.x + 0] = Block(treePos.x + 0, treePos.y + 2, treePos.z + 0, LOG);
+		blocks[((int)treePos.z + 0) * CHUNKHEIGHT * CHUNKWIDTH + ((int)treePos.y + 3) * CHUNKWIDTH + (int)treePos.x + 0] = Block(treePos.x + 0, treePos.y + 3, treePos.z + 0, LOG);
+		blocks[((int)treePos.z + 0) * CHUNKHEIGHT * CHUNKWIDTH + ((int)treePos.y + 4) * CHUNKWIDTH + (int)treePos.x + 0] = Block(treePos.x + 0, treePos.y + 4, treePos.z + 0, LOG);
+	}
+	treePoses.clear();
 }
 
 void Chunk::placeBlockAt(int x, int y, int z, int block)
@@ -142,8 +186,25 @@ void Chunk::breakBlockAt(uint8_t x, uint8_t y, uint8_t z)
 		world.reloadMesh(chunkIndex - LOADEDCHUNKWIDTH);
 }
 
-Block Chunk::GenorateBlock(uint8_t x, uint8_t y, uint8_t z, float NoiseValue) {
-	if(y > 70 + NoiseValue * 28)
+Block Chunk::GenorateBlock(uint8_t x, uint8_t y, uint8_t z, float noiseValue, float noiseValue2, float TreeNoiseValue) {
+	float noiseValueCombined = noiseValue * 0.75f + noiseValue2 * 0.25f;
+	if (y > 80 + noiseValueCombined * 25) {
+		if (y <= 86)
+			return Block(x,y,z,WATER);
+		if (y <= 88)
+			return Block(x, y, z, AIR);
+		if (y <= 81 + noiseValueCombined * 25 && TreeNoiseValue >= 0.9654f && x < 13 && x > 3 && z < 13 && z > 3) {
+			treePoses.push_back(glm::vec3(x,y,z));
+			return Block(x, y, z, LOG);
+		}
 		return Block(x, y, z, AIR);
-	return Block(x, y, z, DIRT);
+	}
+	if (y > 79 + noiseValueCombined * 25) {
+		if (y <= 87)
+			return Block(x, y, z, SAND);
+		return Block(x, y, z, GRASS);
+	}
+	if (y > 72 + noiseValueCombined * 25)
+		return Block(x, y, z, DIRT);
+	return Block(x, y, z, STONE);
 }

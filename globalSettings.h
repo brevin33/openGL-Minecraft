@@ -16,9 +16,15 @@
 #define AMBIENTOCCLUSIONSTRENGTH .33f
 #define CHUNKBUFFERSIZE 12000
 // blocks
+#define LEAF -6
+#define WATER -2
 #define AIR -1
 #define DIRT 0
 #define GRASS 1
+#define STONE 2
+#define LOG 3
+#define PLANK 4
+#define SAND 5
 class World;
 class Chunk;
 class Block;

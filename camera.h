@@ -27,7 +27,7 @@ const float ZOOM = 45.0f;
 const float GRAVITY = -28.8f;
 const float MAXACCEL = 60.0f;
 const int PLAYERHEIGHT = 2;
-const float jumpHeight = 2.5f;
+const float jumpHeight = 1.7f;
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera
@@ -89,10 +89,10 @@ public:
     void breakBlock() {
         glm::vec3 currentPos = Position;
         glm::vec3 realFront = Front;
-        realFront.y += 0.1f;
+        realFront.y += 0.3f;
         for (size_t i = 0; i < 72; i++)
         {
-            currentPos = 0.05f * realFront + currentPos;
+            currentPos = 0.07f * realFront + currentPos;
             glm::vec3 currentBlockPos = getBlockposition(currentPos);
             if (world.getBlockFromWorldPos(currentBlockPos.x, currentBlockPos.y, currentBlockPos.z).blockType >= 0) {
                 world.removeBlockFromWorldPos(currentBlockPos.x, currentBlockPos.y, currentBlockPos.z);
@@ -105,10 +105,10 @@ public:
         glm::vec3 currentPos = Position;
         glm::vec3 lastBlockPos = glm::vec3(-9999,-9999,-9999);
         glm::vec3 realFront = Front;
-        realFront.y += 0.1f;
-        for (size_t i = 0; i < 72; i++)
+        realFront.y += 0.3f;
+        for (size_t i = 0; i < 100; i++)
         {
-            currentPos = 0.05f * realFront + currentPos;
+            currentPos = 0.07f * realFront + currentPos;
             glm::vec3 currentBlockPos = getBlockposition(currentPos);
             if (world.getBlockFromWorldPos(currentBlockPos.x, currentBlockPos.y, currentBlockPos.z).blockType >= 0) {
                 if (lastBlockPos != glm::vec3(-9999, -9999, -9999))
@@ -162,7 +162,7 @@ public:
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 GetViewMatrix()
     {
-        return glm::lookAt(glm::vec3(Position.x, Position.y-0.2f, Position.z), Position + Front, Up);
+        return glm::lookAt(glm::vec3(Position.x, Position.y-0.4f, Position.z), Position + Front, Up);
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
