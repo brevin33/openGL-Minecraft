@@ -56,9 +56,9 @@ void Chunk::createMesh() {
 	while(locked){}
 	locked = true;
 	vertices.clear();
-	vertices.reserve(20000);
+	vertices.reserve(180000);
 	triangles.clear();
-	vertices.reserve(5000);
+	vertices.reserve(50000);
 	for (int i = 0; i < CHUNKWIDTH * CHUNKWIDTH * CHUNKHEIGHT; i++)
 	{
 		blocks[i].addGemometry(vertices,triangles,chunkIndex);
