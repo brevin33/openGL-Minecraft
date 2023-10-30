@@ -27,7 +27,6 @@ private:
 	void createNewChunk(int x, int y);
 	void overrideNewChunk(int x, int y, Chunk* chunk);
 
-	void loadChunks();
 	void moveCenterChunkLeft();
 	void moveCenterChunkRight();
 	void moveCenterChunkForward();

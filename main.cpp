@@ -6,6 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <vector>
+#include <string>
+#include "stb_image.h"
 #include "shader.h"
 #include "world.h"
 #include "camera.h"
@@ -26,6 +28,8 @@ bool firstMouse = true;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+unsigned int loadCubemap(std::vector<std::string> faces);
+
 float dt = 0.0f;	
 float lastFrame = 0.0f;
 
@@ -180,6 +184,12 @@ void cleanup() {
 } 
 
 void loadVisuals() {
+
+    //skybox
+
+
+
+    // crosshair
     glGenBuffers(1, &crosshairVBO);
     glGenBuffers(1, &crosshairEBO);
     glGenVertexArrays(1, &crosshairVAO);
@@ -194,7 +204,7 @@ void loadVisuals() {
     // Shader
     shaders.push_back(Shader("block.vert", "block.frag"));
     shaders[blockShader].use();
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.05f, 400.0f);
     shaders[blockShader].setMat4("projection", projection);
     shaders.push_back(Shader("screenSpace.vert", "solidColor.frag"));
     shaders[1].use();
@@ -254,4 +264,37 @@ inline glm::vec3 MoveTowards(glm::vec3 start, glm::vec3 dest, float max) {
     glm::vec3 dif = dest - start;
     dif = glm::clamp(dif, -max, max);
     return start + dif;
+}
+
+
+unsigned int loadCubemap(std::vector<std::string> faces)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 }

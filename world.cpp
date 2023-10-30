@@ -150,7 +150,9 @@ void World::moveCenterChunkForward()
 	{
 		for (size_t x = 0; x < LOADEDCHUNKWIDTH; x++)
 		{
+			chunksToRemeshLock.lock();
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
+			chunksToRemeshLock.unlock();
 		}
 	}
 	loadedChunksLock = false;
@@ -186,7 +188,9 @@ void World::moveCenterChunkBack()
 	{
 		for (size_t x = 0; x < LOADEDCHUNKWIDTH; x++)
 		{
+			chunksToRemeshLock.lock();
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
+			chunksToRemeshLock.unlock();
 		}
 	}
 	loadedChunksLock = false;
@@ -221,7 +225,9 @@ void World::moveCenterChunkRight()
 	{
 		for (size_t z = 0; z < LOADEDCHUNKWIDTH; z++)
 		{
+			chunksToRemeshLock.lock();
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
+			chunksToRemeshLock.unlock();
 		}
 	}
 	loadedChunksLock = false;
@@ -257,7 +263,9 @@ void World::moveCenterChunkLeft()
 	{
 		for (size_t z = 0; z < LOADEDCHUNKWIDTH; z++)
 		{
+			chunksToRemeshLock.lock();
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
+			chunksToRemeshLock.unlock();
 		}
 	}
 	loadedChunksLock = false;
@@ -291,8 +299,4 @@ void World::overrideNewChunk(int x, int z, Chunk* chunk)
 	grassTerrain->GenUniformGrid2D(treeNoiseOutput.data(), (centerChunkPos.x + x) * CHUNKWIDTH, (centerChunkPos.z + z) * CHUNKWIDTH, 16, 16, 4.0f, seed);
 	chunk->reLoadChunk((z + centerChunkPos.z - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, (x + centerChunkPos.x - LOADEDCHUNKWIDTH / 2) * CHUNKWIDTH, z * LOADEDCHUNKWIDTH + x, noiseOutput, noiseOutput2, treeNoiseOutput);
 	loadedChunks[z * LOADEDCHUNKWIDTH + x] = chunk;
-}
-
-void World::loadChunks()
-{
 }

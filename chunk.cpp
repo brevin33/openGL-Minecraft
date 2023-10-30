@@ -11,7 +11,6 @@
 
 
 Chunk::Chunk(){
-
 }
 
 Chunk::Chunk(int worldZ, int worldX, uint8_t chunkIndex, std::vector<float> const& TerrainNoiseValues, std::vector<float> const& TerrainNoiseValues2, std::vector<float> const& TreeNoiseValues)
@@ -57,7 +56,9 @@ void Chunk::createMesh() {
 	while(locked){}
 	locked = true;
 	vertices.clear();
+	vertices.reserve(20000);
 	triangles.clear();
+	vertices.reserve(5000);
 	for (int i = 0; i < CHUNKWIDTH * CHUNKWIDTH * CHUNKHEIGHT; i++)
 	{
 		blocks[i].addGemometry(vertices,triangles,chunkIndex);

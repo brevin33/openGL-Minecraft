@@ -40,6 +40,8 @@ class Block;
 enum ShaderNames
 {
 	blockShader,
+	screenSpace,
+	skybox,
 };
 
 #endif

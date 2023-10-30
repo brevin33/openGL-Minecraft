@@ -163,6 +163,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </CopyFileToFolders>
     <None Include="screenSpace.vert" />
+    <None Include="skybox.frag" />
+    <None Include="skybox.vert" />
     <None Include="solidColor.frag" />
   </ItemGroup>
   <ItemGroup>

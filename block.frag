@@ -17,10 +17,10 @@ void main()
 		TexColor = TexColor * vec4(0.4,0.65,0.235,0.5) * 2.0;
 	}
 	else if(isLeaf){
-		TexColor = TexColor * vec4(0.4,0.65,0.235,0.5) * 1.5;
+		TexColor = TexColor * vec4(0.4,0.65,0.235,0.5) * 1.2;
 	}
 	if(TexColor.a < 0.3){
 		discard;
 	}
-	FragColor = vec4(vec3(TexColor) * min((1 - OcclusionValue),.8) * 0.8,TexColor.a);
+	FragColor = vec4(vec3(TexColor) * min((1 - OcclusionValue),.7) * 0.75,TexColor.a);
 }
