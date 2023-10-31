@@ -41,7 +41,7 @@ void World::setup() {
 		loadedChunks[i]->setup();
 		loadedChunks[i]->createMesh();
 	}
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		std::thread thread_obj(&World::remeshChunks, this);
 		thread_obj.detach();
@@ -69,22 +69,36 @@ void World::remeshChunks()
 		}
 		auto elem = *chunksToRemesh.begin();
 		chunksToRemesh.erase(chunksToRemesh.begin());
+		Chunk* chunk = loadedChunks[elem];
 		chunksToRemeshLock.unlock();
-		loadedChunks[elem]->createMesh();
+		chunk->createMesh();
 	}
 }
 
 void World::updateLoadedChunks() {
 	glm::vec3 oldCenterChunkPos = centerChunkPos;
 	centerChunkPos = glm::floor(playerPos / (float)CHUNKWIDTH);
-	if (oldCenterChunkPos.x < centerChunkPos.x)
+	if (oldCenterChunkPos.x < centerChunkPos.x) {
+		chunksToRemeshLock.lock();
 		moveCenterChunkRight();
-	else if (oldCenterChunkPos.x > centerChunkPos.x)
+		chunksToRemeshLock.unlock();
+	}
+	else if (oldCenterChunkPos.x > centerChunkPos.x) {
+		chunksToRemeshLock.lock();
 		moveCenterChunkLeft();
-	if (oldCenterChunkPos.z < centerChunkPos.z)
+		chunksToRemeshLock.unlock();
+	}
+	if (oldCenterChunkPos.z < centerChunkPos.z) {
+		chunksToRemeshLock.lock();
 		moveCenterChunkForward();
-	else if (oldCenterChunkPos.z > centerChunkPos.z)
- 		moveCenterChunkBack();
+		chunksToRemeshLock.unlock();
+	}
+	else if (oldCenterChunkPos.z > centerChunkPos.z) {
+		chunksToRemeshLock.lock();
+		moveCenterChunkBack();
+		chunksToRemeshLock.unlock();
+
+	}
 	updateChunkIndex();
 	//remeshChunks();
 }
@@ -150,9 +164,7 @@ void World::moveCenterChunkForward()
 	{
 		for (size_t x = 0; x < LOADEDCHUNKWIDTH; x++)
 		{
-			chunksToRemeshLock.lock();
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
-			chunksToRemeshLock.unlock();
 		}
 	}
 	loadedChunksLock = false;
@@ -188,9 +200,7 @@ void World::moveCenterChunkBack()
 	{
 		for (size_t x = 0; x < LOADEDCHUNKWIDTH; x++)
 		{
-			chunksToRemeshLock.lock();
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
-			chunksToRemeshLock.unlock();
 		}
 	}
 	loadedChunksLock = false;
@@ -225,9 +235,7 @@ void World::moveCenterChunkRight()
 	{
 		for (size_t z = 0; z < LOADEDCHUNKWIDTH; z++)
 		{
-			chunksToRemeshLock.lock();
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
-			chunksToRemeshLock.unlock();
 		}
 	}
 	loadedChunksLock = false;
@@ -263,9 +271,7 @@ void World::moveCenterChunkLeft()
 	{
 		for (size_t z = 0; z < LOADEDCHUNKWIDTH; z++)
 		{
-			chunksToRemeshLock.lock();
 			chunksToRemesh.insert(z * LOADEDCHUNKWIDTH + x);
-			chunksToRemeshLock.unlock();
 		}
 	}
 	loadedChunksLock = false;

@@ -94,7 +94,7 @@ void processInput(GLFWwindow* window)
 }
 
 void render() {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(.6509803921568628f, .8f, .9803921568627451f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     shaders[blockShader].use();
     // camera/view transformation
@@ -204,7 +204,7 @@ void loadVisuals() {
     // Shader
     shaders.push_back(Shader("block.vert", "block.frag"));
     shaders[blockShader].use();
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.05f, 400.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.05f, 120.0f);
     shaders[blockShader].setMat4("projection", projection);
     shaders.push_back(Shader("screenSpace.vert", "solidColor.frag"));
     shaders[1].use();

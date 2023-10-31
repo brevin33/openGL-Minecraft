@@ -22,5 +22,5 @@ void main()
 	if(TexColor.a < 0.3){
 		discard;
 	}
-	FragColor = vec4(vec3(TexColor) * min((1 - OcclusionValue),.7) * 0.75,TexColor.a);
+	FragColor = vec4(vec3(TexColor) * min((1 - OcclusionValue),.8) * 0.87,TexColor.a);
 }

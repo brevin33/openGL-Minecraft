@@ -7,8 +7,8 @@
 #include "shader.h"
 #include "texture.h"
 #define CHUNKWIDTH 16 // max 16 as block stores xz as a nibble/uint4_t
-#define CHUNKHEIGHT 255 // max 255 as block stores y as uint8_t
-#define LOADEDCHUNKWIDTH 7
+#define CHUNKHEIGHT 128 // max 255 as block stores y as uint8_t
+#define LOADEDCHUNKWIDTH 17
 #define TEXTUREATLASWIDTH 1024.0
 #define TEXTUREATLASHEIGHT 512.0
 #define SPRITEWIDTH 16
